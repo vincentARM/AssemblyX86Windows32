@@ -5,22 +5,22 @@ Ensuite il nous faut un compilateur pour traduire le sources assembleur en un mo
 Il vous faut le télécharger et l’installer dans un répertoire de votre ordinateur. Téléchargez aussi la documentation de nasm au format pdf (et lisez là plusieurs fois mais elle est en anglais).
 Il est lancé dans une console batch windows ou dans une fenêtre powerShell par la commande  <br>
 `
-répertoire\nasm.exe -f win32 nomprogramme.asm -l <nomprogramme>.txt  <br>
-`
+répertoire\nasm.exe -f win32 nomprogramme.asm -l nomprogramme.txt
+` <br>
 avec repertoire le nom du dossier contenant l’exécutable de nasm  <br>
 l’option -f win32 qui va créer un objet au format windows 32 bits <br>
-avec <nomprogramme>.asm le nom de votre source assembleur <br>
-l’option -l <nomprogramme>.txt qui récupérera le listing de compilation. <br>
+avec nomprogramme.asm le nom de votre source assembleur <br>
+l’option -l nomprogramme.txt qui récupérera le listing de compilation. <br>
 
 L’objet résultat sera stocké sur le répertoire de lancement avec le nom  <nomprogramme>.obj  <br>
 
 Il nous faut aussi un éditeur de lien ou linker qui va créer un programme exécutable à partir de l’objet issu de la compilation. Nous allons utiliser le programme goLink disponible sur le site  http://www.godevtool.com/  . Vous devez le télécharger ainsi que la documentation (en anglais) et l’installer dans le même répertoire que nasm (ou un autre répertoire).
 Il se lance avec la commande : <br>
 
-<répertoire>GoLink.exe  <nomprogramme>.obj /console Kernel32.dll User32.dll Gdi32.dll /entry:Main  <br>
+`répertoire\GoLink.exe  nomprogramme.obj /console Kernel32.dll User32.dll Gdi32.dll /entry:Main ` <br>
 
-avec <repertoire> le nom du dossier contenant l’exécutable de GoLink  <br>
-<nomprogramme>.obj  le nom de l’objet crée par la compilation <br>
+>avec repertoire le nom du dossier contenant l’exécutable de GoLink  <br>
+nomprogramme.obj  le nom de l’objet crée par la compilation <br>
 /console  une option demandant l’affichage de la  console batch  <br>
  Kernel32.dll User32.dll Gdi32.dll : les dll nécessaires à la exécution des fonctions de l’API Windows  <br>
 /entry Main : l’option précisant quelle instruction du programme doit être exécutée en premier.  <br>

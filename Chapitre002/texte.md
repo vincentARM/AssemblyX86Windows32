@@ -71,7 +71,7 @@ Et si vous regardez le résultat de la compilation dans le fichier pgmch2-5.txt 
 <br>
 Voyons maintenant comment écrire une boucle. Dans le programme pgmCh2_6.asm, nous allons calculer la somme des nombres de 1 à 5 : <br>
 Le registre eax servira de totalisateur et nous l’initialisons à 0. Nous devons à chaque utilisation d’un registre, et si necessaire l’initialiser à la valeur que nous souhaitons car il peut contenir n’importe quoi.<br>
-Le registre ebc servira de compteur de boucle de 1 à 5. Nous l’initialisons à 1 et il sera incrementé de 1 dans la boucle avec l’instruction 
+Le registre ebc servira de compteur de boucle de 1 à 5. Nous l’initialisons à 1 et il sera incrementé de 1 dans la boucle avec l’instruction <br>
 ```asm
 inc ebx 
 ```
@@ -79,7 +79,7 @@ Pour terminer la boucle nous comparons la valeur du registre ebx avec la valeur 
 ```asm
 cmp ebx,5 
 ```
-et nous bouclons à l’étiquette .A1 : si le compteur est plus petit ou egal avec l’instruction 
+et nous bouclons à l’étiquette .A1 : si le compteur est plus petit ou egal avec l’instruction <br>
 ```asm
 jle .A1
 ```

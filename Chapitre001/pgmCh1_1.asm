@@ -1,12 +1,12 @@
-;programme 1 sert à  verifier le bon fonctionnement 
+;programme pgmCh1_1 sert Ã Â  verifier le bon fonctionnement 
 ; du compilateur et du linker
 
 ;=======================================
-; segment des données initialisées
+; segment des donnÃ©es initialisÃ©es
 ;=======================================
 segment .data 
 ;=======================================
-; segment des données non initialisées
+; segment des donnÃ©es non initialisÃ©es
 ;=======================================
 segment .bss
 ;=======================================
@@ -16,9 +16,9 @@ segment .text
     global Main
     extern ExitProcess
 Main:
-    mov eax,5          ; met la valeur 25 dans le registre eax
+    mov eax,5          ; met la valeur 5 dans le registre eax
     push eax           ; met le contenu du registre sur la pile
-    call ExitProcess   ; et retourne au système d'exploitation
-    ; le code retour peut être affiché dans PowerShell windows avec la commande echo $LASTEXITCODE
+    call ExitProcess   ; et retourne au systÃ¨me d'exploitation
+    ; le code retour peut Ãªtre affichÃ© dans PowerShell windows avec la commande echo $LASTEXITCODE
 
 

@@ -23,7 +23,8 @@ L’instruction mov eax,5 indique au processeur de mettre la valeur 5 dans le re
 Un registre est un minuscule composant électronique qui contient 32 interrupteurs qui sont soit éteints soit allumés et qui représentent les données binaires 0 ou 1. Ces 32 données peuvent donc coder les nombres entiers de 0 à 2 puissance 32 -1 soit 4 294 967 295.   <br>
 Ce nombre peut réprésenter tout ce que vous voulez : un nombre, un (ou plusieurs) caractère codé en ascii, le code couleur d’un pixel, une adresse de la mémoire, un nombre de carottes, etc etc. Seul vous programmeur saurez ce que le contenu représente !!  <br>
 Ici nous demandons au processeur de mettre la valeur immédiate 5. Vous remarquerez que le registre de destination est placé avant la valeur origine. C’est une normalisation de la syntaxe pour l’assembleur des processeurs Intel.  <br>
-Puis nous trouvons l ‘instruction push eax, qui place le contenu du registre (soit 5) sur la pile. Nous verrons plus tard ce qu’est la pile. <br>
+Dans cette syntaxe, mov représente le mnémonique du code opération, et eax le nom du registre destnataire. <br>
+Puis nous trouvons l ‘instruction push eax, qui place le contenu du registre eax (soit 5) sur la pile. Nous verrons plus tard ce qu’est la pile. <br>
 Puis nous appelons la fonction de l’Api windows qui termine proprement le programme. Elle va en particulier récupérer la valeur se trouvant sur la pile et la passer au système d’exploitation ce qui permet d’afficher sa valeur avec la commande echo.  <br>
 Je dis terminer proprement, car cette fonction va aussi nettoyer tous les gravats que nos futurs programmes peuvent laisser derrière eux (fichiers non fermés par exemple).
 Plutôt que d’utiliser cette fonction, nous pouvons aussi utiliser l’instruction ret pour rendre la main au système d’exploitation. Mais cela est très dangereux car notre programme peut laisser une situation instable au système d’exploitation qui peut se comporter bizarrement après l’exécution de notre programme.  <br>
@@ -32,8 +33,17 @@ Dans le répertoire de compilation, nous trouvons aussi le fichier pgmCh1₁.txt
 Si nous regardons son contenu, nous voyons 2 parties : une à gauche qui ne contient que des chiffres hexadécimaux en face des instructions assembleur (ce sont les instructions en langage machine, les seules compréhensibles par le microprocesseur) et une partie à droite qui reprend les lignes de notre programme.  <br>
 Vous constatez que les commentaires et les pseudo instructions n’ont aucune correspondance avec du code machine.
 
-Nous pouvons aussi remplacer la valeur 5 par un nom de constante. Dans le programme pgmCh2_2.asm nous définissons la valeur 5 avec le nom CINQ avec l'instruction <br>
+Nous pouvons aussi remplacer la valeur 5 par un nom de constante. Dans le programme pgmCh2_2.asm nous définissons la valeur 5 avec le nom CINQ avec la pseudo instruction <br>
 ```asm
 %define  CINQ    5
 ```
 et nous remplaçons l'instruction mov eax,5 par mov eax,CINQ. <br>
+Attention, il n'ya pas de stockage de 5 quelque part, simplement le compilateur dans une première phase remplace le nom CINQ par la valeur 5.
+
+Je vous ai indiqué aussi que l'étiquette Main: représentait l'adresse du début du programme. Dans le programme pgmCh2_3. asm, nous mettons cettte adresse dans le registre eax comme ceci :
+```asm
+    mov eax,Main         ; sans le : 
+```
+Et si nous examinons le résultat après exécution du programme nous trouvons un nombre comme : 4198400 qui dépend de votre environnement de travail. <br> Donc les instructions de notre programme commencent à l'octet 4198400 de la mémoire de l'ordinateur. <br>
+
+

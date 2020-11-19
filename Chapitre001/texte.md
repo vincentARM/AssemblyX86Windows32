@@ -7,7 +7,7 @@ Il est lancé dans une console batch windows ou dans une fenêtre powerShell par
 
 <répertoire>nasm.exe -f win32 <nomprogramme>.asm -l <nomprogramme>.txt  <br>
 
-avec <repertoire> le nom du dossier contenant l’exécutable de nasm  <br>
+avec <<repertoire>> le nom du dossier contenant l’exécutable de nasm  <br>
 l’option -f win32 qui va créer un objet au format windows 32 bits <br>
 avec <nomprogramme>.asm le nom de votre source assembleur <br>
 l’option -l <nomprogramme>.txt qui récupérera le listing de compilation. <br>
@@ -25,11 +25,11 @@ avec <repertoire> le nom du dossier contenant l’exécutable de GoLink  <br>
  Kernel32.dll User32.dll Gdi32.dll : les dll nécessaires à la exécution des fonctions de l’API Windows  <br>
 /entry Main : l’option précisant quelle instruction du programme doit être exécutée en premier.  <br>
 
-Voici un exemple de script  <A href="AssemblyX86Windows32/Chapitre001/compil32pgm1.bat"> ici </a> sous la forme d’un .bat.  <br>
+Voici un exemple de script  <A href="https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre001/compil32pgm1.bat"> ici </a> sous la forme d’un .bat.  <br>
 
 
 
-Pour tester tout cela, nous écrivons <a href="AssemblyX86Windows32/Chapitre001/pgmCh1_1.asm">ce petit programme pgmCh1_1.asm</a> avec notre éditeur, nous le sauvegardons puis nous exécutons le script. Nous corrigeons au fur et à mesure les erreurs éventuelles : nom des répertoire erronés, nom du programme source, erreur de saisie etc.
+Pour tester tout cela, nous écrivons <a href="https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre001/pgmCh1_1.asm">ce petit programme pgmCh1_1.asm</a> avec notre éditeur, nous le sauvegardons puis nous exécutons le script. Nous corrigeons au fur et à mesure les erreurs éventuelles : nom des répertoire erronés, nom du programme source, erreur de saisie etc.
  <br>
 Vous devez obtenir un exécutable avec le nom <nomduprogramme>.exe et il suffit de cliquer dessus pour l »exécuter. Remarque : aucun émulateur n’est nécessaire !!! c’est parfait. <br>
 Mais rien ne se passe : pas d’erreur, pas d’affichage, rien !!   Mais ceci est normal. Vous pouvez quand même vérifier la bonne exécution du programme en affichant le code retour soit en ajoutant dans un .bat l’instruction batch echo %ErrorLevel% soit l’instruction echo $LASTEXITCODE si vous lancez le programme dans le powerShell de Windows. <br>Vous devoir voir la valeur 5.<br><br>

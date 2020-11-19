@@ -67,7 +67,8 @@ Et si vous regardez le résultat de la compilation dans le fichier pgmch2-5.txt 
 18 00000000 B8[00000000]                mov eax,Main       ; met l'adresse définie par Main dans le registre eax<br>
 19                                  et1:
 20 00000005 BB[05000000]                mov ebx,et1        ; met l'adresse définie par et1 dans le registre ebx
-```  <br>
+``` 
+<br>
 Voyons maintenant comment écrire une boucle. Dans le programme pgmCh2_6.asm, nous allons calculer la somme des nombres de 1 à 5 : <br>
 Le registre eax servira de totalisateur et nous l’initialisons à 0. Nous devons à chaque utilisation d’un registre, et si necessaire l’initialiser à la valeur que nous souhaitons car il peut contenir n’importe quoi.<br>
 Le registre ebc servira de compteur de boucle de 1 à 5. Nous l’initialisons à 1 et il sera incrementé de 1 dans la boucle avec l’instruction 

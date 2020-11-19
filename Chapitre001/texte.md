@@ -4,10 +4,10 @@ Que nous faut-il tout d’abord,pour commencer à programmer en assembleur ?  i
 Ensuite il nous faut un compilateur pour traduire le sources assembleur en un module objet. Dans ce tutoriel, je vais donc utiliser nasm disponible gratuitement sur le site https://www.nasm.us/ et dont l’utilisation et l’apprentissage est assez facile. Il utilise la syntaxe Intel pour la prise en compte des sources.
 Il vous faut le télécharger et l’installer dans un répertoire de votre ordinateur. Téléchargez aussi la documentation de nasm au format pdf (et lisez là plusieurs fois mais elle est en anglais).
 Il est lancé dans une console batch windows ou dans une fenêtre powerShell par la commande  <br>
-
-<répertoire>nasm.exe -f win32 <nomprogramme>.asm -l <nomprogramme>.txt  <br>
-
-avec <<repertoire>> le nom du dossier contenant l’exécutable de nasm  <br>
+`
+répertoire\nasm.exe -f win32 nomprogramme.asm -l <nomprogramme>.txt  <br>
+`
+avec repertoire le nom du dossier contenant l’exécutable de nasm  <br>
 l’option -f win32 qui va créer un objet au format windows 32 bits <br>
 avec <nomprogramme>.asm le nom de votre source assembleur <br>
 l’option -l <nomprogramme>.txt qui récupérera le listing de compilation. <br>

@@ -76,7 +76,9 @@ Le registre ebc servira de compteur de boucle de 1 à 5. Nous l’initialisons �
 inc ebx 
 ```
 Pour terminer la boucle nous comparons la valeur du registre ebx avec la valeur 5 avec l’instruction <br>
+```asm
 cmp ebx,5 
+```
 et nous bouclons à l’étiquette .A1 : si le compteur est plus petit ou egal avec l’instruction 
 ```asm
 jle .A1

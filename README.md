@@ -1,4 +1,4 @@
-## Assembleur X86 32 bits pour windows avec le compilateur nasm.<br>
+# Assembleur X86 32 bits pour windows avec le compilateur nasm.<br>
 # Introduction : <br>
 Pendant ce deuxième confinement, je décide de me replonger dans la programmation en assembleur X86 32 bits avec windows10 pour essayer d’écrire un petit tutoriel.<br>
 La difficulté avec windows 10 et ceci depuis windows XP, est que ce système d’exploitation n’autorise pas l’appel des interruptions ni les appels système pour programmer les fonctions d’entrées sorties. Il va nous obliger à utiliser les appels à l’API windows.<br>

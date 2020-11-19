@@ -31,3 +31,9 @@ Plutôt que d’utiliser cette fonction, nous pouvons aussi utiliser l’instruc
 Dans le répertoire de compilation, nous trouvons aussi le fichier pgmCh1₁.txt qui contient la liste de compilation crée par l’option -l pgmch1₁.txt de nasm.  <br>
 Si nous regardons son contenu, nous voyons 2 parties : une à gauche qui ne contient que des chiffres hexadécimaux en face des instructions assembleur (ce sont les instructions en langage machine, les seules compréhensibles par le microprocesseur) et une partie à droite qui reprend les lignes de notre programme.  <br>
 Vous constatez que les commentaires et les pseudo instructions n’ont aucune correspondance avec du code machine.
+
+Nous pouvons aussi remplacer la valeur 5 par un nom de constante. Dans le programme pgmCh2_2.asm nous définissons la valeur 5 avec le nom CINQ avec l'instruction <br>
+```asm
+%define  CINQ    5
+```
+et nous remplaçons l'instruction mov eax,5 par mov eax,CINQ. <br>

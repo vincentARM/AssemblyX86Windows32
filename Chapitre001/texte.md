@@ -25,22 +25,12 @@ avec <repertoire> le nom du dossier contenant l’exécutable de GoLink  <br>
  Kernel32.dll User32.dll Gdi32.dll : les dll nécessaires à la exécution des fonctions de l’API Windows  <br>
 /entry Main : l’option précisant quelle instruction du programme doit être exécutée en premier.  <br>
 
-Voici un exemple de script  ici sous la forme d’un .bat.  <br>
+Voici un exemple de script  <A href:AssemblyX86Windows32/Chapitre001/compil32pgm1.bat> ici </a> sous la forme d’un .bat.  <br>
 
-Rem lancement compilation nasm
-Rem cd D:\Developpement\Windows\Assembleur32\Projets\projetTuto\Chapitre1
-cd .
 
-D:\Logiciels\NASM\nasm.exe -f win32  pgmCh1_1.asm
 
-D:\Logiciels\Golink\GoLink.exe pgmCh1_1.obj  /console Kernel32.dll User32.dll Gdi32.dll Comdlg32.dll  /entry:Main 
-pause
-pgmCh1_1.exe
-echo %ErrorLevel%
-pause
-
-Pour tester tout cela, nous écrivons ce petit programme avec notre éditeur, nous le sauvegardons puis nous exécutons le script. Nous corrigeons au fur et à mesure les erreurs éventuelles : nom des répertoire erronés, nom du programme source, erreur de saisie etc.
+Pour tester tout cela, nous écrivons <a href: AssemblyX86Windows32/Chapitre001/pgmCh1_1.asm >ce petit programme pgmCh1_1.asm</a> avec notre éditeur, nous le sauvegardons puis nous exécutons le script. Nous corrigeons au fur et à mesure les erreurs éventuelles : nom des répertoire erronés, nom du programme source, erreur de saisie etc.
  <br>
-Vous devez obtenir un exécutable avec le nom <nomduprogramme>.exe et il suffit de cliquer dessus pour l »exécuter. Remarque : aucun émulateur n’est nécessaire !!! c’est parfait ;
-Mais rien ne se passe : pas d’erreur, pas d’affichage, rien !!   Mais ceci est normal. Vous pouvez quand même vérifier la bonne exécution du programme en affichant le code retour soit en ajoutant dans un .bat l’instruction batch echo %ErrorLevel% soit l’instruction echo $LASTEXITCODE si vous lancez le programme dans le powerShell de Windows. Vous devoir voir la valeur 5.
+Vous devez obtenir un exécutable avec le nom <nomduprogramme>.exe et il suffit de cliquer dessus pour l »exécuter. Remarque : aucun émulateur n’est nécessaire !!! c’est parfait. <br>
+Mais rien ne se passe : pas d’erreur, pas d’affichage, rien !!   Mais ceci est normal. Vous pouvez quand même vérifier la bonne exécution du programme en affichant le code retour soit en ajoutant dans un .bat l’instruction batch echo %ErrorLevel% soit l’instruction echo $LASTEXITCODE si vous lancez le programme dans le powerShell de Windows. <br>Vous devoir voir la valeur 5.<br><br>
 Dans le chapitre suivant nous allons décortiquer ce programme. <br>

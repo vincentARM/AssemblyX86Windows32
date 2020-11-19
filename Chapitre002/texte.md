@@ -63,21 +63,23 @@ et1:
 ```
 Vous remarquerez que nous utilisons un deuxième registre ebx pour effectuer la soustraction. Après compilation et exécution, le résultat trouvé est 5 soit une longueur de 5 octets pour l’instruction mov eax,Main. <br>
 Et si vous regardez le résultat de la compilation dans le fichier pgmch2-5.txt vous trouvez qu’en effet l’instruction machine à bien une longueur de 5 : <br>
->
+```asm
 18 00000000 B8[00000000]                mov eax,Main       ; met l'adresse définie par Main dans le registre eax<br>
 19                                  et1:
 20 00000005 BB[05000000]                mov ebx,et1        ; met l'adresse définie par et1 dans le registre ebx
-<
+```  <br>
 Voyons maintenant comment écrire une boucle. Dans le programme pgmCh2_6.asm, nous allons calculer la somme des nombres de 1 à 5 : <br>
 Le registre eax servira de totalisateur et nous l’initialisons à 0. Nous devons à chaque utilisation d’un registre, et si necessaire l’initialiser à la valeur que nous souhaitons car il peut contenir n’importe quoi.<br>
 Le registre ebc servira de compteur de boucle de 1 à 5. Nous l’initialisons à 1 et il sera incrementé de 1 dans la boucle avec l’instruction 
-inc ebx  <br>
-
+```asm
+inc ebx 
+```
 Pour terminer la boucle nous comparons la valeur du registre ebx avec la valeur 5 avec l’instruction <br>
 cmp ebx,5 
 et nous bouclons à l’étiquette .A1 : si le compteur est plus petit ou egal avec l’instruction 
+```asm
 jle .A1
-
+```
 j pour jump en anglais c’est à dire saut l pour less (plus petit) et e pour égal.<br>
 Nous verrons dans un autre chapitre toutes les autres possibilités des sauts .<br>
 Après compilation et exécution, l’affichage du code retour du programme donne bien la valeur 15 (1+2+3+4+5).<br>
@@ -89,9 +91,9 @@ zone1:      dw 12
 ```
 DW signifiant Déclaration d’un Word (un mot) cad 4 octets. Mais pourquoi 4 octets ? Parce qu’un entier est contenu dans un registre 32 bits soit 4 octets.<br>
 
-Ensuite dans la partie claude nous mettons le contenu de la zone dans le registre eax avec l’instruction : <br>
+Ensuite dans le segment code nous mettons le contenu de la zone dans le registre eax avec l’instruction : <br>
 ```asm
     mov  eax,[zone1]
 ```
-Cette fois ci, l’étiquette est entre crochet car nous voulouns charger son contenu et non pas sa valeur comme nous l’avons fait avec mov eax,Main. Je vous ai laissé en commentaire dans le programme l’instruction mov eax,zone1 qui va mettre l’adresse dans eax.<br>
+Cette fois ci, l’étiquette est entre crochet car nous voulons charger son contenu et non pas sa valeur comme nous l’avons fait avec mov eax,Main. Je vous ai laissé en commentaire dans le programme l’instruction mov eax,zone1 qui va mettre l’adresse dans eax.<br>
 Vous pouvez compiler les 2 versions et vous verrez que la première vous donne le résultat 12 et la seconde une valeur dans les 4200000 ce qui est très différent. <br>

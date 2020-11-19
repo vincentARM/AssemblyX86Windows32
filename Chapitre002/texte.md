@@ -46,4 +46,52 @@ Je vous ai indiqué aussi que l'étiquette Main: représentait l'adresse du déb
 ```
 Et si nous examinons le résultat après exécution du programme nous trouvons un nombre comme : 4198400 qui dépend de votre environnement de travail. <br> Donc les instructions de notre programme commencent à l'octet 4198400 de la mémoire de l'ordinateur. <br>
 
+Nous pouvons aussi effectuer des calculs : par exemple des additions est des soustractions  comme dans le programme pgmCh2-3.asm <br>
+```asm
+    mov eax,12
+    add eax,15         ; ajoute 15 au registre eax
+    sub eax,3          ; enleve 3 au registre eax
+```
+Et nous pouvons en combinant cela calculer la taille d’une instruction comme dans le programme pgmCh2_5.asm :<br>
+```asm
+Main:
+    mov eax,Main       ; met l'adresse définie par Main dans le registre eax
+et1:
+    mov ebx,et1        ; met l'adresse définie par et1 dans le registre ebx
+    sub ebx,eax        ; calcule la différence
+    push ebx           ; met le contenu du registre sur la pile
+```
+Vous remarquerez que nous utilisons un deuxième registre ebx pour effectuer la soustraction. Après compilation et exécution, le résultat trouvé est 5 soit une longueur de 5 octets pour l’instruction mov eax,Main. <br>
+Et si vous regardez le résultat de la compilation dans le fichier pgmch2-5.txt vous trouvez qu’en effet l’instruction machine à bien une longueur de 5 : <br>
+>
+18 00000000 B8[00000000]                mov eax,Main       ; met l'adresse définie par Main dans le registre eax<br>
+19                                  et1:
+20 00000005 BB[05000000]                mov ebx,et1        ; met l'adresse définie par et1 dans le registre ebx
+<
+Voyons maintenant comment écrire une boucle. Dans le programme pgmCh2_6.asm, nous allons calculer la somme des nombres de 1 à 5 : <br>
+Le registre eax servira de totalisateur et nous l’initialisons à 0. Nous devons à chaque utilisation d’un registre, et si necessaire l’initialiser à la valeur que nous souhaitons car il peut contenir n’importe quoi.<br>
+Le registre ebc servira de compteur de boucle de 1 à 5. Nous l’initialisons à 1 et il sera incrementé de 1 dans la boucle avec l’instruction 
+inc ebx  <br>
 
+Pour terminer la boucle nous comparons la valeur du registre ebx avec la valeur 5 avec l’instruction <br>
+cmp ebx,5 
+et nous bouclons à l’étiquette .A1 : si le compteur est plus petit ou egal avec l’instruction 
+jle .A1
+
+j pour jump en anglais c’est à dire saut l pour less (plus petit) et e pour égal.<br>
+Nous verrons dans un autre chapitre toutes les autres possibilités des sauts .<br>
+Après compilation et exécution, l’affichage du code retour du programme donne bien la valeur 15 (1+2+3+4+5).<br>
+
+Enfin un dernier exemple  avec le programme pgmCh2_7.asm qui va afficher la valeur entière stockée dans une zone de la mémoire. <br>
+Pour cela nous déclarons dans le segment .data une étiquette  zone1 : pour réserver une zone de 4 octets contenant la valeur 12 avec la pseudo instruction : <br>
+```asm
+zone1:      dw 12
+```
+DW signifiant Déclaration d’un Word (un mot) cad 4 octets. Mais pourquoi 4 octets ? Parce qu’un entier est contenu dans un registre 32 bits soit 4 octets.<br>
+
+Ensuite dans la partie claude nous mettons le contenu de la zone dans le registre eax avec l’instruction : <br>
+```asm
+    mov  eax,[zone1]
+```
+Cette fois ci, l’étiquette est entre crochet car nous voulouns charger son contenu et non pas sa valeur comme nous l’avons fait avec mov eax,Main. Je vous ai laissé en commentaire dans le programme l’instruction mov eax,zone1 qui va mettre l’adresse dans eax.<br>
+Vous pouvez compiler les 2 versions et vous verrez que la première vous donne le résultat 12 et la seconde une valeur dans les 4200000 ce qui est très différent. <br>

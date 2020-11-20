@@ -34,14 +34,14 @@ Si nous regardons son contenu, nous voyons 2 parties : une à gauche qui ne con
 Vous constatez que les commentaires et les pseudo instructions n’ont aucune correspondance avec du code machine.
 
 Nous pouvons aussi remplacer la valeur 5 par un nom de constante. Dans le programme pgmCh2_2.asm nous définissons la valeur 5 avec le nom CINQ avec la pseudo instruction <br>
-```asm
+```asm 
 %define  CINQ    5
 ```
 et nous remplaçons l'instruction mov eax,5 par mov eax,CINQ. <br>
 Attention, il n'ya pas de stockage de 5 quelque part, simplement le compilateur dans une première phase remplace le nom CINQ par la valeur 5.
 
 Je vous ai indiqué aussi que l'étiquette Main: représentait l'adresse du début du programme. Dans le programme pgmCh2_3. asm, nous mettons cettte adresse dans le registre eax comme ceci :
-```asm
+```asm 
     mov eax,Main         ; sans le : 
 ```
 Et si nous examinons le résultat après exécution du programme nous trouvons un nombre comme : 4198400 qui dépend de votre environnement de travail. <br> Donc les instructions de notre programme commencent à l'octet 4198400 de la mémoire de l'ordinateur. <br>
@@ -72,7 +72,7 @@ Et si vous regardez le résultat de la compilation dans le fichier pgmch2-5.txt 
 Voyons maintenant comment écrire une boucle. Dans le programme pgmCh2_6.asm, nous allons calculer la somme des nombres de 1 à 5 : <br>
 Le registre eax servira de totalisateur et nous l’initialisons à 0. Nous devons à chaque utilisation d’un registre, et si necessaire l’initialiser à la valeur que nous souhaitons car il peut contenir n’importe quoi.<br>
 Le registre ebc servira de compteur de boucle de 1 à 5. Nous l’initialisons à 1 et il sera incrementé de 1 dans la boucle avec l’instruction <br>
-```asm
+```asm 
 inc ebx 
 ```
 Pour terminer la boucle nous comparons la valeur du registre ebx avec la valeur 5 avec l’instruction <br>
@@ -92,7 +92,8 @@ Pour cela nous déclarons dans le segment .data une étiquette  zone1 : pour r�
 ```asm
 zone1:      dw 12
 ```
-DW signifiant Déclaration d’un Word (un mot) cad 4 octets. Mais pourquoi 4 octets ? Parce qu’un entier est contenu dans un registre 32 bits soit 4 octets.<br>
+DW signifiant Data Word (Déclaration d’un Word (un mot)) cad 4 octets. Mais pourquoi 4 octets ? Parce qu’un entier est contenu dans un registre 32 bits soit 4 octets.<br>
+>Rappel : un octet (ou byte) contient 8 bits. Un demi-mot (Half Word) contient 2 octets. Un mot contient 4 octets. Un double mot contient 8 octets.
 
 Ensuite dans le segment code nous mettons le contenu de la zone dans le registre eax avec l’instruction : <br>
 ```asm

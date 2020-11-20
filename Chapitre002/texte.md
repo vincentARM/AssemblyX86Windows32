@@ -33,7 +33,7 @@ Dans le répertoire de compilation, nous trouvons aussi le fichier pgmCh1₁.txt
 Si nous regardons son contenu, nous voyons 2 parties : une à gauche qui ne contient que des chiffres hexadécimaux en face des instructions assembleur (ce sont les instructions en langage machine, les seules compréhensibles par le microprocesseur) et une partie à droite qui reprend les lignes de notre programme.  <br>
 Vous constatez que les commentaires et les pseudo instructions n’ont aucune correspondance avec du code machine.
 
-Nous pouvons aussi remplacer la valeur 5 par un nom de constante. Dans le programme pgmCh2_2.asm nous définissons la valeur 5 avec le nom CINQ avec la pseudo instruction <br>
+Nous pouvons aussi remplacer la valeur 5 par un nom de constante. Dans le programme pgmCh2_2.asm nous définissons la valeur 5 avec le nom CINQ avec la pseudo instruction : <br>
 ```asm 
 %define  CINQ    5
 ```
@@ -64,7 +64,7 @@ et1:
 Vous remarquerez que nous utilisons un deuxième registre ebx pour effectuer la soustraction. Après compilation et exécution, le résultat trouvé est 5 soit une longueur de 5 octets pour l’instruction mov eax,Main. <br>
 Et si vous regardez le résultat de la compilation dans le fichier pgmch2-5.txt vous trouvez qu’en effet l’instruction machine à bien une longueur de 5 : <br>
 ```asm
-18 00000000 B8[00000000]                mov eax,Main       ; met l'adresse définie par Main dans le registre eax<br>
+18 00000000 B8[00000000]                mov eax,Main       ; met l'adresse définie par Main dans le registre eax
 19                                  et1:
 20 00000005 BB[05000000]                mov ebx,et1        ; met l'adresse définie par et1 dans le registre ebx
 ``` 
@@ -72,7 +72,7 @@ Et si vous regardez le résultat de la compilation dans le fichier pgmch2-5.txt 
 Voyons maintenant comment écrire une boucle. Dans le programme pgmCh2_6.asm, nous allons calculer la somme des nombres de 1 à 5 : <br>
 Le registre eax servira de totalisateur et nous l’initialisons à 0. Nous devons à chaque utilisation d’un registre, et si necessaire l’initialiser à la valeur que nous souhaitons car il peut contenir n’importe quoi.<br>
 Le registre ebc servira de compteur de boucle de 1 à 5. Nous l’initialisons à 1 et il sera incrementé de 1 dans la boucle avec l’instruction <br>
-```asm 
+```asm
 inc ebx 
 ```
 Pour terminer la boucle nous comparons la valeur du registre ebx avec la valeur 5 avec l’instruction <br>

@@ -15,8 +15,9 @@ Ici les segments data et bss sont vides. Seul le segment .text contient les inst
 La pseudo instruction global indique que le label Main pourra être vu par des processus extérieurs et en particulier par le linker.  <br>
 C’est la même chose pour extern qui indique que la fonction ExitProcess se trouve ailleurs dans une librairie. <br>
 
-Dans le segment .text, nous trouvons le label Main (un label ou étiquette est toujours suivi de : ) qui représente l’adresse du début des instructions.  En effet, il ne nous est pas possible de savoir à quelle adresse exacte, notre programme va être chargé en mémoire. Nous le marquons donc par une étiquette et nous laissons le soin au compilateur, puis au linker puis au système d’exploitation de déterminer cette adresse. Tout d’abord la pseudo instruction global va permettre au compilateur puis au linker de savoir où est cette etiquette.  <br>
+Dans le segment .text, nous trouvons le label Main (un label ou étiquette est toujours suivi de : ) qui représente l’adresse du début des instructions.  En effet, il ne nous est pas possible de savoir à quelle adresse exacte, notre programme va être chargé en mémoire. Nous le marquons donc par une étiquette et nous laissons le soin au compilateur, puis au linker puis au système d’exploitation de déterminer cette adresse. Tout d’abord la pseudo instruction global va permettre au compilateur puis au linker de savoir où est cette étiquette.  <br>
 Dans les directives du linker, nous avons indiqué l’option /entry :Main et c’est cela qui va indiquer à Windows où se trouve notre première instruction à exécuter. Bien sûr, nous pouvons changer le nom de ce label pour l’appeler Principal : par exemple mais il faudra aussi modifier ce nom dans la directive /entry du linker sinon il y aura signalement d’une erreur.  <br>
+Après le chargement de l'executable en memoire par le système d'exploitation, celui ci va initialiser un composant electronique le pointeur d'instruction (registre eip) avec l'adresse de cette première instruction. Ensuite ce pointeur sera augmenté à chaque exécution d'une instruction, de la taille de celle ci pour préparer le processeur à executer la suivante. Vous trouverez sur internet, (wikipedia) le déroulement des étapes de chaque instruction (chargement,decodage, execution etc.). <br>
 
 L’instruction mov eax,5 indique au processeur de mettre la valeur 5 dans le registre eax.
 <br>
@@ -73,6 +74,7 @@ Et si vous regardez le résultat de la compilation dans le fichier pgmch2-5.txt 
 Voyons maintenant comment écrire une boucle. Dans le programme pgmCh2_6.asm, nous allons calculer la somme des nombres de 1 à 5 : <br>
 Le registre eax servira de totalisateur et nous l’initialisons à 0. Nous devons à chaque utilisation d’un registre, et si necessaire l’initialiser à la valeur que nous souhaitons car il peut contenir n’importe quoi.<br>
 Le registre ebc servira de compteur de boucle de 1 à 5. Nous l’initialisons à 1 et il sera incrementé de 1 dans la boucle avec l’instruction <br>
+
 ```asm
     inc ebx
 ```

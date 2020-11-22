@@ -33,9 +33,10 @@ Dans le répertoire de compilation, nous trouvons aussi le fichier pgmCh1₁.txt
 Si nous regardons son contenu, nous voyons 2 parties : une à gauche qui ne contient que des chiffres hexadécimaux en face des instructions assembleur (ce sont les instructions en langage machine, les seules compréhensibles par le microprocesseur) et une partie à droite qui reprend les lignes de notre programme.  <br>
 Vous constatez que les commentaires et les pseudo instructions n’ont aucune correspondance avec du code machine.
 
-Nous pouvons aussi remplacer la valeur 5 par un nom de constante. Dans le programme pgmCh2_2.asm nous définissons la valeur 5 avec le nom CINQ avec la pseudo instruction : <br>
+Nous pouvons aussi remplacer la valeur 5 par un nom de constante. Dans le programme pgmCh2_2.asm nous définissons la valeur 5 avec le nom CINQ avec l'une ou l'autre des  pseudos instructions suivante : <br>
 ```asm 
 %define  CINQ    5
+CINQ equ 5
 ```
 et nous remplaçons l'instruction mov eax,5 par mov eax,CINQ. <br>
 Attention, il n'ya pas de stockage de 5 quelque part, simplement le compilateur dans une première phase remplace le nom CINQ par la valeur 5.
@@ -75,14 +76,17 @@ Le registre ebc servira de compteur de boucle de 1 à 5. Nous l’initialisons �
 ```asm
     inc ebx
 ```
+
 Pour terminer la boucle nous comparons la valeur du registre ebx avec la valeur 5 avec l’instruction <br>
 ```asm
 cmp ebx,5 
 ```
+
 et nous bouclons à l’étiquette .A1 : si le compteur est plus petit ou egal avec l’instruction <br>
 ```asm
 jle .A1
 ```
+
 j pour jump en anglais c’est à dire saut l pour less (plus petit) et e pour égal.<br>
 Nous verrons dans un autre chapitre toutes les autres possibilités des sauts .<br>
 Après compilation et exécution, l’affichage du code retour du programme donne bien la valeur 15 (1+2+3+4+5).<br>

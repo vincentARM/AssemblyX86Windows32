@@ -10,7 +10,7 @@ Dans le programme précédent qui nous a servi de test des outils, il y figure ;
 Les commentaires sont ignorés par le compilateur et ne servent qu’aux programmeurs.  <br>
 En assembleur, ils sont essentiels pour comprendre ce que font les instructions. <br>
 
-Les pseudo instructions segment indiquent l’organisation de la mémoire et son contenu. Nous verrons plus tard le rôle des différentes parties de la mémoire. <br>
+Les pseudo instructions `segment` indiquent l’organisation de la mémoire et son contenu. Nous verrons plus tard le rôle des différentes parties de la mémoire. <br>
 Ici les segments data et bss sont vides. Seul le segment .text contient les instructions pour le microprocesseur.  <br>
 La pseudo instruction global indique que le label Main pourra être vu par des processus extérieurs et en particulier par le linker.  <br>
 C’est la même chose pour extern qui indique que la fonction ExitProcess se trouve ailleurs dans une librairie. <br>

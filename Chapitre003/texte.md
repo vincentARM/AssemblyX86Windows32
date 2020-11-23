@@ -62,7 +62,7 @@ szTitre  db 'Win32', 0
 szTitre1 db __?FILE?__ , 0
 ```
 
-Le programme hello32.asm se résume donc au passage des paramètres à l’appel de la fonction puis à la terminaison du programme. Le code retour ou une donnée d’une fonction de l’API s ‘effectue toujours dans le registre eax. La documentation précise que si la fonction échoue elle retourne 0 sinon elle retourne quelque chose. <br>
+Le programme [hello32.asm](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre003/hello32.asm) se résume donc au passage des paramètres à l’appel de la fonction puis à la terminaison du programme. Le code retour ou une donnée d’une fonction de l’API s ‘effectue toujours dans le registre eax. La documentation précise que si la fonction échoue elle retourne 0 sinon elle retourne quelque chose. <br>
 Dans notre programme nous passons le contenu de eax à la fonction ExitProcess pour voir le contenu de ce code retour. <br>
 L’exécution affiche bien le message et l’affichage du code retour donne la valeur 1. <br>
 
@@ -73,17 +73,22 @@ La routine est située après les instructions de fin de programme et commence p
 Voyons en détail le mécanisme :<br>
 Le système d’exploitation va initialiser le registre d’instruction (registre eip) avec l’adresse de l’étiquette Main qui correspond à la première instruction de notre programme qui est  mov eax,szMsg qui va être exécutée par le processeur.  Puis le processeur va exécuter le call, il va d’abord stocker l’adresse de l ‘instruction qui suit le call (push eax) sur la pile qui va donc être décrémenter de 4 octets. Puis il va mettre dans le registre d’instruction, l’adresse de la routine afficherMessage pour aller exécuter la première instruction de la routine.<br>
 Le processeur va exécuter toutes les instructions de la routine jusqu’à rencontrer l’instruction ret. Celle ci va dépiler l’adresse de retour stockée sur la pile, et la mettre dans le registre pointeur d’instructions et le processeur reviendra exécuter l’instruction qui suivait le call. <br>
-Vous comprenez l’importance que la pile soit toujours en phase lors des push et pop successifs sinon le processeur peut récupérer une adresse de retour erronée et effectuer n’importe quoi !!!
-Vous voyez aussi que les fonctions de l’Api windows remettent la pile en ordre puisque nous avons passé les paramètres d’entrée avec 4 push. Ce ne sera pas toujours le cas avec d’autres librairies particulières. Ce sera à nous dans le programme appelant à remettre la pile en phase.
+Vous comprenez l’importance que la pile soit toujours en phase lors des push et pop successifs sinon le processeur peut récupérer une adresse de retour erronée et effectuer n’importe quoi !!! <br>
+Vous voyez aussi que les fonctions de l’Api windows remettent la pile en ordre puisque nous avons passé les paramètres d’entrée avec 4 push. Ce ne sera pas toujours le cas avec d’autres librairies particulières. Ce sera à nous dans le programme appelant à remettre la pile en phase. <br>
 
-Il y a une autre manière de passer l’adresse du message à notre routine : c’est d’utiliser la pile comme le font les fonctions de l’Api.
-Dans le programme afficheMessage1.asm, nous effectuons un push szMsg pour stocker l’adresse du message sur la pile puis nous appelons la routine d’affichage. Ces 2 instructions ont pour effet de décrémenter la pile de 8 octets.
-Dans le routine d’affichage nous commençons par sauver sur la pile, le registre ebp pour registre de pile de base car nous allons l’utiliser. Cela a pour effet de décrémenter à nouveau la pile (registre esp) de 4 octets. Nous conservons cet état de la pile en copiant le registre esp dans le registre de base ebp.
-Nous sauvegardons maintenant tous les registres avec l’instruction pusha qui remplace les instructions push eax, push ebx etc et nous récupérons dans le registre edx l’adresse du message sur la pile avec l’instruction mov edx,[ebp +8].
-Oui, nous récupérons la valeur se trouvant à l’adresse contenue dans le registre de base + 8 octets , voyons cela :
-Le registre de base contient l’état du registre de pile tel qu’il était en début de routine et après la sauvegarde de ebp et qui a décrémenté la pile de 4 octets. Et l’instruction call d’appel de la routine a aussi décrémenté de 4 octets la pile, ce qui fait un total de 8 octets pour retrouver l’adresse du message que nous avons « pushé » sur la pile juste avant l’appel.
-Ensuite nous retrouvons les instructions d’appel à la fonction MessageBoxA puis nous terminons la routine en restaurant tous les registres avec l’instruction popa puis en restaurant le registre de base et en retournant au programme appelant.
-Il ne nous reste plus qu’à réaligner la pile pour inhiber le push de l’adresse du message dans le programme appelant. Nous pouvons incrémenter la pile de 4 octets avec l’instruction add esp,4 mais ici nous utilisons une simplification en mettant la valeur 4 à l’instruction ret. C’est le processeur qui fera l’opération automatiquement.
+Il y a une autre manière de passer l’adresse du message à notre routine : c’est d’utiliser la pile comme le font les fonctions de l’Api. <br>
+Dans le programme [afficheMessage1.asm](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre003/afficheMessage1.asm), nous effectuons un push szMsg pour stocker l’adresse du message sur la pile puis nous appelons la routine d’affichage. Ces 2 instructions ont pour effet de décrémenter la pile de 8 octets. <br>
+Dans le routine d’affichage nous commençons par sauver sur la pile, le registre ebp pour registre de pile de base car nous allons l’utiliser. Cela a pour effet de décrémenter à nouveau la pile (registre esp) de 4 octets. Nous conservons cet état de la pile en copiant le registre esp dans le registre de base ebp. <br>
+Nous sauvegardons maintenant tous les registres avec l’instruction pusha qui remplace les instructions push eax, push ebx etc et nous récupérons dans le registre edx l’adresse du message sur la pile avec l’instruction :  <br>
 
-J’ai détaillé ce mécanisme car nous l’utiliserons à chaque passage de paramètre à une routine et il faudra bien se souvenir de l’ordre des push pour récupérer les bonnes valeurs.
+``àsm
+mov edx,[ebp +8].
+```
+
+Oui, nous récupérons la valeur se trouvant à l’adresse contenue dans le registre de base + 8 octets , voyons cela : <br>
+Le registre de base contient l’état du registre de pile tel qu’il était en début de routine et après la sauvegarde de ebp et qui a décrémenté la pile de 4 octets. Et l’instruction call d’appel de la routine a aussi décrémenté de 4 octets la pile, ce qui fait un total de 8 octets pour retrouver l’adresse du message que nous avons « pushé » sur la pile juste avant l’appel. <br>
+Ensuite nous retrouvons les instructions d’appel à la fonction MessageBoxA puis nous terminons la routine en restaurant tous les registres avec l’instruction popa puis en restaurant le registre de base et en retournant au programme appelant. <br>
+Il ne nous reste plus qu’à réaligner la pile pour inhiber le push de l’adresse du message dans le programme appelant. Nous pouvons incrémenter la pile de 4 octets avec l’instruction add esp,4 mais ici nous utilisons une simplification en mettant la valeur 4 à l’instruction ret. C’est le processeur qui fera l’opération automatiquement. <br>
+
+J’ai détaillé ce mécanisme car nous l’utiliserons à chaque passage de paramètre à une routine et il faudra bien se souvenir de l’ordre des push pour récupérer les bonnes valeurs. <br>
 Cette solution est plus satisfaisante que le passage des paramètres par les registres car elle ne les utilise pas, et les registres sont rares !!!

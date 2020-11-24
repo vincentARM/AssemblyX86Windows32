@@ -8,9 +8,9 @@ LONGUEUR equ 12
 ; segment des données initialisées
 ;=======================================
 segment .data 
-szTitre        db __?FILE?__, 0               ; titre de la fenêtre
-szMessRegistre:         db 'Valeur du registre :', 0   ; message
-szRetourLigne: db 10,0
+szTitre          db __?FILE?__, 0               ; titre de la fenêtre
+szMessRegistre:  db 'Valeur du registre :', 0   ; message
+szRetourLigne:   db 10,0
 ;=======================================
 ; segment des données non initialisées
 ;=======================================

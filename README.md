@@ -15,6 +15,7 @@ Les prérequis nécessaires à l’assembleur sont de connaître la composition 
 Pour la documentation (hélas le plus souvent en anglais), vous trouverez toute la documentation des processeurs Intel ici :  <a href="https://software.intel.com/content/www/us/en/develop/articles/intel-sdm.html">documentation Intel. </a> Je vous conseille de télécharger les premiers volumes pour les avoir à disposition facilement. <br>
 
 Vous trouverez une description des instructions X86 sur <a href="https://www.gladir.com/LEXIQUE/ASM/DICTIONN.HTM">le site de gladir</a> avec des exemples plus adaptés pour le 8 bits et 16 bits.<br>
+vous trouverez aussi sur de nombreux sites d'université des cours (souvent en pdf) en français qui exposent de manière détaillée les principes de l'assembleur X86. <br>
 
 Sur Internet, il existe de nombreux tutoriels mais qui datent un peu, et qui sont souvent orientés vers la programmation en 8 et 16 bits et qui necessitent l’utilisation d’un émulateur pour faire fonctionner les programmes sous Windows. Vous en trouverez sur le site [devellopez.com](https://asm.developpez.com/cours/)<br>
 
@@ -25,3 +26,6 @@ Vous me pardonnerez, toutes les erreurs, bêtises et mauvaises interprétations 
 [Chapitre 2 : Les bases : premiers programmes](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre002)
 
 [Chapitre 3 : La pile, affichage d'un message, premières routines](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre003)
+
+[Chapitre 4 : affichage d'un message dans la console](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre004)
+

@@ -14,7 +14,7 @@ le label du message <br>
 la référence de la console issue de la fonction précédente.<br>
 Au retour de l’appel, nous ne testons pas le code retour mais nous passons la valeur contenue dans la zone iCaractèresAff pour vérification.<br>
 Hourra, le message est bien affiché dans la console de powerShell. <br>
-Si vous cliquer directement sur l’exécutable rien ne se passe !!! En effet, comme le programme se termine de suite après l’affichage, on ne voit rien . Il nous faut ajouter un message de pause avec le bouton ok pour bloquer l’exécution (programme affConsole2.asm)et voir la console de commande window s’ouvrir et le message apparaître bien comme ici :<br>
+Si vous cliquer directement sur l’exécutable rien ne se passe !!! En effet, comme le programme se termine de suite après l’affichage, on ne voit rien . Il nous faut ajouter un message de pause avec le bouton ok pour bloquer l’exécution (programme [affConsole2.asm](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre004/affConsole2.asm))et voir la console de commande window s’ouvrir et le message apparaître bien comme ici :<br>
 ![image console](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre004/ecranConsolech4.JPG)
 
 Au fait, avez vous remarquez que la définition de la zone titre de la fenêtre est dans la partie code. Et cela fonctionne ! <br>

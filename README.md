@@ -29,3 +29,5 @@ Vous me pardonnerez, toutes les erreurs, bêtises et mauvaises interprétations 
 
 [Chapitre 4 : affichage d'un message dans la console](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre004)
 
+[Chapitre 5 : affichage décimal d'un registre](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre005)
+

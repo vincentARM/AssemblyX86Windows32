@@ -1,5 +1,5 @@
 # Chapitre 5 : affichage décimal du contenu d’un registre.
-Aux chapitres précédents, nous avons vu comment afficher un message stocké dans le segment .data de la mémoire. Maintenant nous allons voir dans le programme afficherRegistre.asm comment afficher en décimal le contenu d’un registre. <br>
+Aux chapitres précédents, nous avons vu comment afficher un message stocké dans le segment .data de la mémoire. Maintenant nous allons voir dans le programme [afficherRegistre.asm](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre005/afficherRegistre.asm) comment afficher en décimal le contenu d’un registre. <br>
 La première idée est de stocker les 4 octets du registre dans une zone en mémoire, de mettre un zéro final pour indiquer qu’il s’agit d’une chaîne puis appeler nos fonctions d’affichage en leur passant cette chaîne. <br>
 Cette solution n’est pas valable car je vous ai indiqué qu’un registre contenait 32 positions qui stockaient un nombre en binaire alors que les fonctions d’affichage demandaient une suite de caractères Ascii. <br>
 Il nous faut donc convertir le contenu du registre en caractères ascii en utilisant la méthode des divisions successives par 10 comme vous l’avez sûrement appris au lycée. <br>

@@ -31,3 +31,6 @@ Vous me pardonnerez, toutes les erreurs, bêtises et mauvaises interprétations 
 
 [Chapitre 5 : affichage décimal d'un registre](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre005)
 
+[Chapitre 6 : addition et soustraction de nombres entiers](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre006)
+
+[Chapitre 7 : multiplication et division de nombres entiers](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre007)

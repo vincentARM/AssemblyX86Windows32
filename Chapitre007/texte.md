@@ -51,3 +51,5 @@ Pour les nombres signés il faut utiliser l’instruction idiv qui divise la pai
 Mais attention si le dividende (contenu dans eax) est un nombre négatif il faut mettre -1 dans le registre edx pour avoir un complément à 2 correct.<br>
 Ici aussi, aucun indicateur n’est positionné quelque soit les cas traités.<br>
 Et cette division n’accepte aussi que la possibilité d’un registre (donc ebx ou ecx).<br>
+
+Et les autres opérations : élévation de puissance, racine carrée etc.. ?   Elles ne sont pas prévues par l"assembleur et donc il ne vous reste plus qu'à les programmer !!!<br>

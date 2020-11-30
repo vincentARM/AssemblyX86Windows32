@@ -9,6 +9,7 @@ Mais une question se pose : comme le nombre maximum codé dans un registre est 
 Heureusement, le microprocesseur le détecte et le signale en positionnant un indicateur de retenue (carry) à 1 et l’assembleur propose 2 instructions pour sauter à une étiquette suivant la valeur de la retenue jc et jnc.<br> 
 Dans le programme nous effectuons le test et nous affichons un message suivant le cas. <br>
 Il faudra donc dans vos futurs programmes, de faire attention lors de l’utilisation de grands nombres  et penser à tester ce dépassement possible.<br>
+Il est aussi possible si nous voulons effectuer des calculs sur plusieurs mots, reporter la retenue avec l'instruction adc qui va additionner 2 registres plus la retenue.<br>
 Enfin nous terminons ce programme avec l’instruction d’incrémentation (sur un autre registre pour changer) inc edx qui remplace l’instruction add edx,1.<br> 
 
 Voyons maintenant la soustraction  dans le programme soustractionRegistre.asm. Nous effectuons la soustraction de valeurs, de registres et nous remarquons que la soustraction d’un nombre plus grand que le premier opérateur  est fausse. <br>
@@ -30,5 +31,6 @@ Mais il y a encore un problème à régler avec les nombres signés : comparer 
 Heureusement l’assembleur propose des sauts différents : <br>
 - JA et JB pour les nombres non signés
 - JG et JL pour les nombres signés<br>
+Remarque : comme pour l'addition, il est possible de reporter automatiquement la retenue si l'on veut calculer sur plusieurs mots avec l'instruction sbc.<br>
 
 Au passage, je remarque que l’affichage des libellés avec des accents est erroné. En cherchant, je vois que sur notepad++ l’encodage des sources est en UTF8. Je le modifie pour passer à l’encodage ANSI et l’affichage des caractères accentués devient correct. Il ne reste plus qu’a corriger tous les accents dans le programme source !!!!<br>

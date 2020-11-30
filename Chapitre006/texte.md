@@ -33,7 +33,7 @@ Heureusement l’assembleur propose des sauts différents : <br>
 - JG et JL pour les nombres signés<br>
 Remarque : comme pour l'addition, il est possible de reporter automatiquement la retenue si l'on veut calculer sur plusieurs mots avec l'instruction sbc.<br>
 
-Dans le programme comparaisonEntier.asm, nous effectuons quelques comparaisons en affichant grâce à une petite routine les indicateurs Zéro, Signe, Carry et Overflow.
+Dans le programme [comparaisonEntier.asm](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre006/comparaisonEntier.asm) , nous effectuons quelques comparaisons en affichant grâce à une petite routine les indicateurs Zéro, Signe, Carry et Overflow.
 En effet l’instruction assembleur de comparaison cmp se comporte comme une soustraction sauf qu’elle ne met pas à jour le résultat. Elle se contente de mettre à jour les indicateurs.<br>
 Si l‘indicateur Zéro est mis à 1 cela veut dire qu’il y a égalité entre les 2 opérandes. <br>
 Sinon si l’indicateur de carry est mis a 1  et si le signe est à 1 cela veut dire que la deuxième valeur est plus grande que la première.<br>

@@ -9,7 +9,8 @@ Curieusement imul peut accepter un registre source et un registre destination et
 Ces 2 instructions de multiplication activent suivant les cas, les indicateurs de Carry et d’Overflow (et toujours les 2 simultanément) . Elles ne mettent pas à jour les indicateurs de signe ou de Zéro.<br>
 Dans le programme [multiplicationRegInd.asm](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre007/multiplicationRegInd.asm), j’ai ajouté une petite routine qui adffiche le contenu des 4 indicateurs et nous allons l’appeler après chaque multiplication (dont les opérandes seront identiques au premier programme).<br>
 Voici les résultats :
-> +1703796
+
+``` +1703796
 Zero : 0 Signe: 0 Carry: 0 Offset: 0
 50
 0
@@ -36,7 +37,9 @@ Zero : 0 Signe: 0 Carry: 1 Offset: 1
 3800301568
 2095475792
 
-+1703796 <
++1703796 
+```
+
 
 Maintenant voyons la division dans le programme [divisionReg.asm](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre007/divisionReg.asm):<br>
 

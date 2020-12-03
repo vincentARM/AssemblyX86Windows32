@@ -34,3 +34,7 @@ Vous me pardonnerez, toutes les erreurs, bêtises et mauvaises interprétations 
 [Chapitre 6 : addition et soustraction de nombres entiers](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre006)
 
 [Chapitre 7 : multiplication et division de nombres entiers](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre007)
+
+[Chapitre 8 : opérations binaires](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre008)
+
+[Chapitre 9 : affichage d'un registre en hexadécimal](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre009)

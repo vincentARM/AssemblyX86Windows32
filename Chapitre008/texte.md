@@ -1,6 +1,6 @@
 # Chapitre 8 : Opérations sur les bits d'un registre. <br>
 
-A partir de la routine qui convertit le contenu d’un registre en base 10, nous la modifions pour afficher les 32 positions d’un registres sous la forme de 0 et de 1 c’est à dire effectuer une conversion en base 2.  Nous remplaçons la division par 10 par une division par 2. Nous verrons ultérieurement comment améliorer cette routine. <br>
+A partir de la routine qui convertit le contenu d’un registre en base 10, nous la modifions pour afficher les 32 positions d’un registre sous la forme de 0 et de 1 c’est à dire effectuer une conversion en base 2.  Nous remplaçons la division par 10 par une division par 2. Nous verrons ultérieurement comment améliorer cette routine. <br>
 Dans le programme afficherRegistreBinaire.asm, nous utilisons cette routine pour afficher le nombre 7 soit 111 en binaire puis le nombre -1. Dans ce dernier cas vous voyez que les 32 bits du registre sont à 1 et donc que -1 est égal à 2 puissance 32 – 1 et représente la plus grande valeur d’un registre 32 bits. <br>
 Maintenant dans le programme operationsBinaires.asm, nous utilisons la routine pour voir les opérations logiques sur les bits. Pour cela nous mettons 4 bits du registre eax avec la valeur 0b1100 et 4 bits du registre ebx avec la valeur binaire 0b0101. Remarquez que nous utilisons la syntaxe Ob pour indiquer au compilateur que nous voulons mettre dans le registe la valeur binaire et pas la valeur décimale. <br>
 Ensuite nous combinons les 2 registres avec l’operateur ET : and et vous remarquez que seule la position où les 2 bits sont à 1 est affichée à 1. Cet opérateur est donc interessant pour extraire 1 ou plusieurs bits d’un registre. Par exemple si nous voulons extraire  les 4 bits du registre eax à partir du 3 ième bit, il suffit de faire un and du registre avec la valeur 0b1111000. <br>
@@ -26,7 +26,8 @@ Enfin les 2 dernières bsf eax,ebx et bsr eax,ebx, analyse les bits du registre 
 
 voici les résultats :
 
-```+1703796
+```
++1703796
 Zero : 0 Signe: 0 Carry: 1 Offset: 0
 Zero : 0 Signe: 0 Carry: 0 Offset: 0
 Valeur du registre :00000000000000000000000000001110

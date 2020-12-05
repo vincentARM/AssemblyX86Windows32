@@ -38,3 +38,5 @@ Vous me pardonnerez, toutes les erreurs, bêtises et mauvaises interprétations 
 [Chapitre 8 : opérations binaires](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre008)
 
 [Chapitre 9 : affichage d'un registre en hexadécimal](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre009)
+
+[Chapitre 10 : le registre d'état](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre010)

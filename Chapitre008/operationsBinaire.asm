@@ -5,10 +5,10 @@
 STD_OUTPUT_HANDLE equ -11
 LONGUEUR equ 33
 ;=======================================
-; segment des données initialisées
+; segment des donnÃ©es initialisÃ©es
 ;=======================================
 segment .data 
-szTitre        db "Win32", 0             ; titre de la fenêtre
+szTitre        db "Win32", 0             ; titre de la fenÃªtre
 szMsgReg:      db 'Valeur du registre :', 0       ; message
 szRetourLigne: db 10,0
 
@@ -22,7 +22,7 @@ bPosC:              db " "
 bPosO:              db " "
                     db 10,0
 ;=======================================
-; segment des données non initialisées
+; segment des donnÃ©es non initialisÃ©es
 ;=======================================
 segment .bss
 sZoneConv:         resb LONGUEUR
@@ -33,9 +33,9 @@ segment .text
     global Main
     extern MessageBoxA , ExitProcess, GetStdHandle, WriteFile
 Main:
-    push esp                 ; pour verifier que la pile est bien alignée en fin de programme
+    push esp                 ; pour verifier que la pile est bien alignÃ©e en fin de programme
     push sZoneConv
-    call conversion10S       ; conversion nombre signé
+    call conversion10S       ; conversion nombre signÃ©
     push sZoneConv
     call afficherConsole
     push szRetourLigne
@@ -126,9 +126,9 @@ Main:
     test eax,0b0001          ; teste la valeur du bit 0
     call verifierIndicateurs
     
-    push esp                 ; pour verifier que la pile est bien alignée
+    push esp                 ; pour verifier que la pile est bien alignÃ©e
     push sZoneConv
-    call conversion10S       ; conversion nombre signé
+    call conversion10S       ; conversion nombre signÃ©
     push sZoneConv
     call afficherConsole
     push szRetourLigne
@@ -145,7 +145,7 @@ afficherMessage:
     mov ebp, esp
     pusha                 ;sauvegarde des registres
     pushf
-    mov edx, [ebp + 8]    ; recup de la valeur a afficher
+    mov edx, [ebp + 8]    ; recup de la valeur Ã  afficher
     push 0                ; uType = MB_OK
     push dword szTitre    ; Titre de la fenÃªtre
     push edx              ; message a afficher
@@ -162,7 +162,7 @@ afficherConsole:
     push    ebp
     mov ebp, esp
     sub esp,8             ; reserve 8 octets pour le nombre de caractÃ¨res Ã©crits
-    pusha                 ;sauvegarde des registres
+    pusha                 ; sauvegarde des registres
     pushf
     mov edx, [ebp + 8]    ; recup de la valeur a afficher
     
@@ -207,7 +207,7 @@ conversion2:
     mov edi,[ebp + 8]      ; recup adresse zone de conversion
     mov ecx,TAILLE-1
     mov ebx ,2
-.A1:                       ; boucle de division par 16
+.A1:                       ; boucle de division par 2
     mov edx,0
     div ebx
     add edx,'0'            ; ajout de '0' pour conversion ascii    
@@ -222,10 +222,10 @@ conversion2:
     pop ebp
     ret 8                 ; alignement pile car 2 push
 ;***************************************************
-;conversion en base 10 signée
+;conversion en base 10 signÃ©e
 ;avec suppression des zeros inutiles
 ;****************************************************
-; parametre 1  valeur à convertir
+; parametre 1  valeur Ã  convertir
 ; parametre 2  zone de conversion longueur > 11
 conversion10S:
     enter 0,0              ; prologue
@@ -234,12 +234,12 @@ conversion10S:
     mov edi,[ebp+8]        ;recup adresse de la zone de conversion
     mov BYTE [edi+LONGUEUR],0 ; stockage 0 final
     mov eax, [ebp + 12]   ; recup de la valeur a afficher
-    cmp eax,0             ; compare à zéro
+    cmp eax,0             ; compare Ã  zÃ©ro
     jl .A1                ; plus petit
     mov dl,'+'            ; signe positif
     jmp .A2
 .A1:
-    mov dl,'-'            ; signe négatif
+    mov dl,'-'            ; signe nÃ©gatif
     neg eax               ; transforme en nombre positif
 .A2:    
     mov byte [edi],dl     ; met le signe en position 0 de la zone
@@ -255,7 +255,7 @@ conversion10S:
     jne  .A3
     inc ecx
     mov eax,1
-.A4:                         ; recopie du résultat en début de zone de conversion
+.A4:                         ; recopie du rÃ©sultat en dÃ©but de zone de conversion
     mov dl,[edi,ecx]
     mov byte [edi,eax],dl
     inc ecx

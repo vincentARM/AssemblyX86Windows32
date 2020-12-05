@@ -27,4 +27,4 @@ CMC  inverse l’indicateur de retenue (carry). <br>
 CLD pour mettre l’indicateur de direction à 0.<br>
 STD pour mettre l’indicateur de direction à 1.<br>
 
-Le programme instructionsRegEtat.asm montre l'utilisation de ces instructions. <br>
+Le programme [instructionsRegEtat.asm](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre010/instructionsRegEtat.asm) montre l'utilisation de ces instructions. <br>

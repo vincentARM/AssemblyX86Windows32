@@ -40,3 +40,16 @@ Valeur du registre :+9
 +1703796
 
 ```
+Au vu de ces instructions, nous pouvons maintenant améliorer la routine d’affichage en base 2. Nous pouvons remplacer l’instruction de division par 2 par l’instruction shr eax,1 mais il nous faut aussi calculer le reste donc il faut multiplier le résultat précédent par 2 avec l’instruction shl eax,1 et soustraire le résultat de la valeur de départ soit la séquence suivante :<br>
+
+```asm
+mov edx,eax ; sauve le dividende de départ
+shr eax,1       ; nouveau dividende = dividende / 2
+mov ebx,eax ; copie le dividende
+shl ebx,1       ; multiplie par 2
+sub edx,ebx ; pour calculer le reste
+
+```
+
+Mais il y a mieux à faire : il suffit de déplacer la valeur de départ d’une position à gauche avec l’instruction shl eax,1 et qui va mettre le bit 31 dans le carry puis de tester celui ci avec l’instruction jc pour positionner soit le caractère 0 soit le caractère 1.<br>
+C’est ce que fait la nouvelle routine dans le programme : afficherRegistreNouBin.asm. Et pour éviter d’avoir à mettre des étiquettes je teste les instructions de copie contitionnelle cmocc et cmovnc qui ne feront les instructions mov que si le carry est ou non positionné. Mais cela pert de son intérêt car l’opérande source ne peu être qu’un registre ou une zone mémoire.

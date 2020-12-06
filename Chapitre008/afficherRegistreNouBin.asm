@@ -1,4 +1,4 @@
-;---programme afficherRegistreBinaire.asm 
+;---programme afficherRegistreNouBin.asm 
 ; conversion d'un registre en base 2
 ; avec routine améliorée
 
@@ -11,8 +11,8 @@ segment .data
 szTitre        db "Win32", 0             ; titre de la fenêtre
 szMsgReg:      db 'Valeur du registre :', 0       ; message
 szRetourLigne: db 10,0
-bUn:           dw '1'
-bZero:         dw '0'
+bUn:           dd '1'
+bZero:         dd '0'
 ;=======================================
 ; segment des données non initialisées
 ;=======================================
@@ -132,10 +132,9 @@ conversion2:
     mov ebp, esp
     pusha                  ;sauvegarde des registres
     pushf
-    mov eax, [ebp + 12]    ; recup de la valeur a afficher
+    mov eax,[ebp + 12]     ; recup de la valeur a afficher
     mov edi,[ebp + 8]      ; recup adresse zone de conversion
     mov ecx,0
-    mov ebx ,2
 .A1:                       ; boucle d'extraction des bits un à un
     shl eax,1
     cmovc edx,[bUn]

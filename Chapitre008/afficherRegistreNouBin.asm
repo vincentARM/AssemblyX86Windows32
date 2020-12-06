@@ -55,6 +55,17 @@ Main:
     push szRetourLigne
     call afficherConsole
     
+    push 15
+    push sZoneConv
+    call conversion2B         ; conversion avec instruction setc
+    push szMsgReg
+    call afficherConsole
+    push sZoneConv
+    call afficherConsole
+    push szRetourLigne
+    call afficherConsole
+    
+    
     push esp                 ; pour verifier que la pile est bien alignée
     push sZoneConv
     call conversion10S       ; conversion nombre signé
@@ -123,6 +134,7 @@ afficherConsole:
     ret 4                  ; alignement pile car 1 push
 ;***************************************************
 ;conversion en base 2 d'un registre en une chaine
+;avec l'instruction cmovc
 ;**************************************************
 ; parametre 1 le registre 
 ; parametre 2 l'adresse de la zone receptrice
@@ -146,6 +158,35 @@ conversion2:
     mov byte [edi+TAILLE],0 ;sinon on ajoute 0 en 32 ieme position pour terminer la chaine
     popf                  ; fin routine
     popa                  ; restaur des registres
+    pop ebp
+    ret 8                 ; alignement pile car 2 push
+;***************************************************
+;conversion en base 2 d'un registre en une chaine
+; avec l'instruction setc
+;**************************************************
+; parametre 1 le registre 
+; parametre 2 l'adresse de la zone receptrice
+TAILLEBIN equ 32
+conversion2B:
+    push    ebp
+    mov ebp, esp
+    pusha                  ;sauvegarde des registres
+    pushf
+    mov eax,[ebp + 12]     ; recup de la valeur a afficher
+    mov edi,[ebp + 8]      ; recup adresse zone de conversion
+    mov ecx,0
+.A1:                       ; boucle d'extraction des bits un à un
+    xor edx,edx            ; raz du registre
+    shl eax,1              ; extraction bit de gauche
+    setc dl                ; si carry met 1 dans le registre dl 
+    add dl,'0'             ; conversion ascii
+    mov byte  [edi,ecx],dl ; et on place le caractere en position debut + 8
+    inc ecx
+    cmp ecx,TAILLEBIN      ; si pas taille atteinte on boucle
+    jl .A1
+    mov byte [edi+TAILLEBIN],0 ;sinon on ajoute 0 en 32 ieme position pour terminer la chaine
+    popf                   ; fin routine
+    popa                   ; restaur des registres
     pop ebp
     ret 8                 ; alignement pile car 2 push
 ;***************************************************

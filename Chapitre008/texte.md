@@ -12,11 +12,13 @@ Nous pouvons ainsi tester la valeur d’un bit particulier avec l’instruction 
 
 Dans le programme [deplaBinaire.asm](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre008/deplaBinaire.asm), nous allons tester les déplacements de bits. Tout d’abord avec l’instruction shl (shift left) nous déplaçons tous les bits du registre eax de 5 positions sur la gauche. <br>
 Puis avec l’instruction shr (shift right) nous déplaçons tous les bits de 2 positions sur la droite.<br>
+Ces déplacements complétent le registre par un ou plusieurs zéros à gauche ou à droite suivant l'instruction.<br>
 Pour des déplacements à droite ou à gauche d’un bit, il est possible de récupérer la valeur du bit éjecté. En effet celui ci est stocké dans l’indicateur de retenue (carry) et il suffit d’utiliser les instructions de saut jc ou jnc pour connaître sa valeur. <br>
 Si nous regardons l’impact de ces déplacements sur des valeurs décimales, vous remarquerez qu’un déplacement sur la gauche correspond à une multiplication par 2 et un déplacement sur la droite aà une division par 2. Par exemple un déplacement de 3 positions sur la droite  correspond à une division par 8 du contenu du registre pour des valeurs non signées.<br>
+Pour effectuer des divisions signées il faut utiliser l'instruction sar qui déplace les bits sur la droite et duplique le bit de signe (bit 31) ce qui laisse la valeur négative. Pour la multiplication il existe l'instruction sal mais elle a le même effet que shl. <br>
 Nous pouvons aussi effectuer des rotations de tous les bits à droite ou à gauche avec les instructions rol et ror.  Il existe aussi les instructions sal et sar qui permette de réinjecter le bit contenu dans le carry. Je vous laisse le soin de les tester.<br>
 
-Enfin dans le programme [modificationBits.asm],(https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre008/modificationBits.asm), nous allons tester différentes instructions de modifications de bits.<br>
+Enfin dans le programme [modificationBits.asm](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre008/modificationBits.asm), nous allons tester différentes instructions de modifications de bits.<br>
 La première bt eax,3 met le 3ième bit du registre eax dans le carry ce qui permet de le tester.<br>
 La 2ième btc eax,1 met le bit 1 dans le carry et inverse celui du registre : s’il y avait zéro, le bit passe à 1 sinon c’est le contraire.<br>
 La 3ième btr eax,2 met le bit 2 dans le carry et remet celui du registre à zéro.<br>

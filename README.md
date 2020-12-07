@@ -21,6 +21,9 @@ Sur Internet, il existe de nombreux tutoriels mais qui datent un peu, et qui son
 
 Vous me pardonnerez, toutes les erreurs, bêtises et mauvaises interprétations que j’ai commises dans ce modeste tutoriel. <br>
 
+Remarque 1 : lorsque vous écrivez, compilez et testez les programmes en assembleur, pensez à fermer toutes les autres applications ou enregistrez vos données. <br>
+Remarque 2 : ne vous contentez pas de recopier les exemples de programmes, mais modifier les pour voir les consèquences bonnes ou mauvaises de vos modifications. <br>
+
 [Chapitre 1 : Les outils](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre001) <br>
 
 [Chapitre 2 : Les bases : premiers programmes](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre002)
@@ -40,3 +43,5 @@ Vous me pardonnerez, toutes les erreurs, bêtises et mauvaises interprétations 
 [Chapitre 9 : affichage d'un registre en hexadécimal](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre009)
 
 [Chapitre 10 : le registre d'état](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre010)
+
+[Chapitre 11 : les accés mémoire](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre011)

@@ -118,6 +118,19 @@ Main:
     push szRetourLigne
     call afficherConsole
     
+    mov eax,-1000            ; division signée  par 8 par deplacement à droite
+    sar eax,3
+    push eax
+    push sZoneConv
+    call conversion10S
+    push szMsgReg
+    call afficherConsole
+    push sZoneConv
+    call afficherConsole
+    push szRetourLigne
+    call afficherConsole
+    
+    
     mov eax,0b110000000000000000000000000000 ; rotation à gauche
     rol eax,4
     push eax

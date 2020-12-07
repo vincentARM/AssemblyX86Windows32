@@ -1,15 +1,16 @@
-Chapitre 11 : la mémoire
+# Chapitre 11 : la mémoire <br>
 Le système d’exploitation donne à notre programme assembleur une certaine quantité de mémoire que nous pouvons utiliser de différentes manières. La plus petite partie que nous pouvons adresser est l’octet soit 8 bits et nous essairons de voir combien Windows nous donne d’octets. <br>
-Cette mémoire disponible est divisée en segment (ou sections) avec chacun un usage particulier. <br>
-Nous trouvons le segment .data qui contient les données qui seront initialisés par notre programme à l’aides des pseudo instructions db (data byte = 1 octet), dw (data word = 2 octets), dd (double word = 4 octets) et dq (quadruple word = 8 octets) et d’autres définitions concernant les nombres en virgule flottante que nous verrons plus tard. <br>
+Cette mémoire disponible est divisée en segments (ou sections) avec chacun un usage particulier. <br>
+Nous trouvons le segment .data qui contient les données qui seront initialisées par notre programme à l’aide des pseudo instructions db (data byte = 1 octet), dw (data word = 2 octets), dd (double word = 4 octets) et dq (quadruple word = 8 octets) et d’autres définitions concernant les nombres en virgule flottante que nous verrons plus tard. <br>
 Avec nasm, il est possible de définir plusieurs zones de même type en les séparant par une virgule. Voir les exemples dans le programme accesMemoire.asm. <br>
 Il est aussi possible de laisser au compilateur le soin de calculer la longueur d’une zone en effectuant la différence entre l’adresse courante donnée par le symbole $ et le début de la zone.  Voir un exemple dans le programme cité plus haut.<br> 
 <br>
 Notre programme peut lire et écrire dans ce segment. <br>
-Ensuite nous trouvons le segment .BSS (Block Started by Symbol ) qui contient les données qui seront initialisées à zéro binaire par le système d’exploitation avant l’exécution du programme. Pour définir les données il est possible d’utiliser les pseudo instructions db, dw, etc mais il existe les pseudo instructions de réservation de place comme resb 10 (réserve 10 octets), resw 5 (réserve 5 mots soit 10 octets) resd 20 (réserve 20 double mot soit 80 octetsà et resq 1. <br>
+
+Ensuite nous trouvons le segment .BSS (Block Started by Symbol ) qui contient les données qui seront initialisées à zéro binaire par le système d’exploitation avant l’exécution du programme. Pour définir les données il est possible d’utiliser les pseudo instructions db, dw, etc mais il existe les pseudo instructions de réservation de place comme resb 10 (réserve 10 octets), resw 5 (réserve 5 mots soit 10 octets) resd 20 (réserve 20 doubles mots soit 80 octets) et resq 1. <br>
 Notre programme peut aussi lire et écrire dans ce segment. <br>
 
-Puis nous trouvons le segment .text qui contient les instructions exécutables du programme. Notre programme ne peut lire que les zones de ce segment, il ne peut pas écrire.<br>
+Puis nous trouvons le segment .text qui contient les instructions exécutables du programme. Notre programme ne peut lire que les zones de ce segment, il ne peut pas y écrire.<br>
 
 Cet ordre est l’ordre habituel des segments lors de l’écriture du programme source mais le chargement réel en mémoire sera indiqué par les directives du linker. Avec golink, il ne nous est pas possible de connaître cet ordre mais en affichant les adresses de chaque zone commençant un segment, nous arriverons à trouver l’ordre de chargement.<br>
 <br>
@@ -17,7 +18,9 @@ Ensuite nous trouvons la pile qui est situé à la fin de la mémoire qui nous e
 
 Puis il reste toute la mémoire comprise entre les 3 premiers segments et la pile : cette zone est appelée le tas et elle nous servira à réserver de la place de manière dynamique lors de l’execution du programme gràace à des fonctions de l »Api Windows. <br>
 
-Pour charger (lire) une donnée de la mémoire dans un registre, il faut utiliser l’instruction mov et en indiquant l’origine de la donnée entre crochet comme ceci
+Il est aussi possible de définir d'autres segments pour des usages particuliers (voir la documentation).<br> 
+
+Pour charger (lire) une donnée de la mémoire dans un registre, il faut utiliser l’instruction mov et en indiquant l’origine de la donnée entre crochets comme ceci
 mov eax,[qZone1] ; charge 4 octets de la mémoire à partir de  l’adresse qZone1
 Rappel : mov eax,qZone1  charge dans le registre eax, l’adresse définie par qZone1
 .<br>
@@ -25,15 +28,15 @@ Pour charger un octet, il faut utiliser comme registre destinataire les parties 
 En utilisant comme registre destinataire la partie 16 bits d’un registre comme ax,bx,cx ou dx, nous pouvons charger 2 octets de la mémoire et en utilisant le registre complet comme eax,ebx ecx ou edx, 4 octets. <br>
 
 L’adresse à charger peut donc être une étiquette comme base mais aussi un registre comme mov eax,[ebx], un registre de base plus un déplacement comme mov eax,[ebx+4], avec une constante mov eax,[ebx+DIX], un registre de base plus un déplacement contenu dans un registre plus une constante comme mov eax,[ebx+ecx+4] et enfin le plus complexe , un registre de base un registre de déplacement multiplié par un ratio plus une constante. Mais le ratio ne peut prendre que les valeurs 2 4 et 8. <br>
-Cette dernière possibilité permet d’accéder à un élément d’un tableau. Par exemple dans le programme, nous avons défini un tableau de 10 entiers (double mot de 4 octets) dont l’adresse de début  est dTableau1.Cette adresse peut être mis dans le registre ebx par mov ebx,dTableau1. Le premier poste sera lu avec l’instruction mov eax,[ebx] et le 5ième poste en ajoutant l’instruction mov ecx,5 puis la lecture par mov eax,[ebx+ecx*4).<br>
+Cette dernière possibilité permet d’accéder à un élément d’un tableau. Par exemple dans le programme, nous avons défini un tableau de 10 entiers (double mot de 4 octets) dont l’adresse de début  est dTableau1.Cette adresse peut être mise dans le registre ebx par mov ebx,dTableau1. Le premier poste sera lu avec l’instruction mov eax,[ebx] et le 5ième poste en ajoutant l’instruction mov ecx,5 puis la lecture par mov eax,[ebx+ecx*4).<br>
 
 Puis nous passons à l’écriture des zones en mémoire. C’est très simple c’est l’inverse de la lecture par exemple mov [dReserve2],eax pour mettre le contenu du registre eax dans les 4 octets de la zone mémoire qui commence à l’adresse dReserve2. Ici nous testons l’écriture de 2 octets et 4 octets dans les zones situées dans le segment BSS et nous vérifions par une lecture la réalité du stockage!!<br>
 Mais ce serait bien d’avoir un affichage des données de la mémoire de manière brute pour voir comment sont stockées les données. <br>
 C’est l’objet du programme afficherMémoire.asm dans lequel nous trouvons la routine AfficherMem qui attend 2 paramètres : l’adresse de début des zones mémoire, et le nombre de blocs de 16 octets  que nous voulons afficher. <br>
-Dans la routine nous commençons par récupérer ces 2 paramètres et nous affichons un titre avec le rappel de l’adresse de début. Puis nous calculons un début de bloc de 16 octets de telle façon que le bloc commence à une adresse multiple de 16 et précédent l’adresse demandée. <br>
+Dans la routine nous commençons par récupérer ces 2 paramètres et nous affichons un titre avec le rappel de l’adresse de début. Puis nous calculons un début de bloc de 16 octets de telle façon que le bloc commence à une adresse multiple de 16 et précédant l’adresse demandée. <br>
 Ensuite nous effectuons 2 boucles ; la première lit chacun des 16 octets du bloc, le convertir en 2 caractères hexadécimal et les positionne à la bonne place sur la ligne d’affichage. <br>
 La seconde recommence la lecture des mêmes 16 octets, vérifie s’ils sont affichables en ascii sinon met un ? À la place et les positionne les uns à la suite des autres sur la ligne d’affichage. Puis cette ligne est affichée et si le nombre de bloc demandé n’est pas atteint, la routine boucle sur le bloc de 16 octets suivant. <br>
-Pour faciliter la lecture de l’affichage en hexadécimal une étoile est affichée devant le premier caractère de l’adresse demandée (sauf si celle ci est déjà un début de bloc).
+Pour faciliter la lecture de l’affichage en hexadécimal une étoile est affichée devant le premier caractère de l’adresse demandée (sauf si celle ci est déjà un début de bloc).<br>
 Tout cela paraît compliqué mais voici le résultat de l’affichage de 2 bloc à partir de l’adresse sZtitrte , zone qui se trouve au début de la .data. <br>
 
 ```

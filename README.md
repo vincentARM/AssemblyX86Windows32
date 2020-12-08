@@ -45,3 +45,5 @@ Remarque 2 : ne vous contentez pas de recopier les exemples de programmes, mais 
 [Chapitre 10 : le registre d'état](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre010)
 
 [Chapitre 11 : les accés mémoire](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre011)
+
+[Chapitre 12 : les accés mémoire](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre012)

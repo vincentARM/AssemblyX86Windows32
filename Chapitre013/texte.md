@@ -10,7 +10,7 @@ Si la chaîne est statique sa longueur peut être définie par la pseudoinstruct
 
 Si la chaîne est dynamique ou saisie il peut être nécessaire de calculer sa longueur en comptant le nombre de caractère jusqu »au 0 final. Voir un exemple dans la routine afficherConsole.<br>
 
-Dans le programme traitChaine.asm, nous commençons par écrire une copie d’une chaîne du segment .data vers le segment .bss d’une manière classique. Une première fois avec recopie du zéro final, un deuxième exemple sans recopie du zéro final.<br>
+Dans le programme [traitChaine.asm](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre013/traitChaine.asm), nous commençons par écrire une copie d’une chaîne du segment .data vers le segment .bss d’une manière classique. Une première fois avec recopie du zéro final, un deuxième exemple sans recopie du zéro final.<br>
 
 Mais l’assembleur x86 offre d’autres possibilités. D’abord il existe 2 registres plus spécialement dédiés aux traitements des chaînes : esi et edi (s pour source et d pour destination). <br>
 

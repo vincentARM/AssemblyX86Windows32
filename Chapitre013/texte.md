@@ -24,3 +24,6 @@ Puis nous utilisons l’instruction spéciale scasb qui compare le caractère du
 Pour les autres types de données, il existe les instructions scasw, scasd et scasq qui fonctionnent de la même manière.<br>
 
 Nous terminons ce programme avec le test d’une routine de comparaison de chaîne. <br>
+
+Dans le programme suivant [rechInsertChaine.asm](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre013/rechInsertChaine.asm), dans une routine chercherChaine nous recherchons une chaîne à l’intérieur d’une chaîne et dans une autre routine InsererChaine nous insérons une chaîne dans une autre chaîne à la position indiquée par un caractère particulier ici le @. J’ai mis assez de commentaires dans le programme, pour comprendre le fonctionnement de ces 2 routines. La deuxième servira à insérer des valeurs dans un message et à éviter une définition plus complexe des messages. <br>
+Vous remarquerez que nous utilisons une zone de la pile à laquelle nous donnons un nom par %define pos1 [ebp-4], ce qui facilite son utilisation.<br>

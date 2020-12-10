@@ -88,10 +88,10 @@ par exemple des mov conditionnels <br>
 
 ```asm
 sub eax,20
-cmovs eax,ebx   ; met le contenu de ebx dans eax si le résultat est positif
+cmovs eax,ebx   ; met le contenu de ebx dans eax si le résultat est negatif
 cmovns eax,ecx ; met le contenu de ecx dans eax si le résultat est positif
 ```
-qui peuvent être utilisé avec des adresses mémoires. <br>
+qui peuvent être utilisées avec des adresses mémoires. <br>
 
 L’instruction set
 
@@ -101,10 +101,11 @@ setg bl ; met la valeur 1 dans le registre bl si eax est plus grand que 100 sin
 ```
 
 Pour les boucles nous avons  les instructions suivantes:
+```
 LOOP label    décrémente ecx et boucle au label tant que ecx est différent de zéro
-LOOPE label décrémente ecx et boucle au label tant que ecx est différent de zéro et si l’indicateur de zéro est différent de 1
-LOOPNE label décrémente ecx et boucle au label tant que ecx est différent de zéro et si l’indicateur de zéro est différent de 0
-LOOPNZ label   décrémente ecx et boucle au label tant que cx est différent de zéro et l’indicateur de zéro vaut 0.  
-LOOPZ label   décrémente cx et boucle au label tant que cx est différent de zéro et l’indicateur de zéro vaut 1.
-
-voir le programme strucTraitement.asm
+LOOPE label   décrémente ecx et boucle au label tant que ecx est différent de zéro et si l’indicateur de zéro est différent de 1
+LOOPNE label  décrémente ecx et boucle au label tant que ecx est différent de zéro et si l’indicateur de zéro est différent de 0
+LOOPNZ label  décrémente ecx et boucle au label tant que ecx est différent de zéro et l’indicateur de zéro vaut 0.  
+LOOPZ label   décrémente ecx et boucle au label tant que ecx est différent de zéro et l’indicateur de zéro vaut 1.
+```
+Voir le programme [strucTraitement.asm](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre014/strucTraitement.asm)

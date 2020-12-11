@@ -108,4 +108,6 @@ LOOPNE label  décrémente ecx et boucle au label tant que ecx est différent de
 LOOPNZ label  décrémente ecx et boucle au label tant que ecx est différent de zéro et l’indicateur de zéro vaut 0.  
 LOOPZ label   décrémente ecx et boucle au label tant que ecx est différent de zéro et l’indicateur de zéro vaut 1.
 ```
+En assembleur, il est aussi possible d'effectuer des appels récursifs. En fin du programme nous calculons la factorielle d'un nombre en appelant une fonction de manière récursive. Attention, il n'est pas controlé le dépassement de taille d'un registre lors du calcul. <br> 
+
 Voir le programme [strucTraitement.asm](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre014/strucTraitement.asm)

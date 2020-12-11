@@ -121,7 +121,20 @@ Main:
     call insererChaine
     push eax
     call afficherConsole
-
+    
+;====================================
+; exemple récursion 
+;=====================================
+    push 10
+    call calculerFactorielle 
+    push eax                ; affichage du compteur
+    push sZoneConv
+    call conversion10
+    push sZoneConv
+    push szMsgReg
+    call insererChaine
+    push eax
+    call afficherConsole
 .Fin:
     push esp                 ; pour verifier que la pile est toujours bien alignée
     call afficherHexa
@@ -130,7 +143,31 @@ Main:
     
     push eax           ; met le code retour sur la pile
     call ExitProcess   ; fin du programme 
-
+;**************************************
+; calcul factorielle
+;**************************************
+calculerFactorielle:
+    enter 0,0             ; prologue
+    push ebx              ;sauvegarde des registres
+    pushf
+    mov eax, [ebp + 8]    ; recup de la valeur à calculer
+    cmp eax,0             ; si zéro alors fin
+    je .A99
+    cmp eax,1             ; si égal à 1 alors fin
+    je .A99
+    mov ebx,eax           ; multiplicateur
+    dec eax
+    push eax              ; et calcul factorielle - 1
+    call calculerFactorielle
+    mul ebx               ; multiplication par le nombre courant
+    jmp .A100
+.A99:
+    mov eax,1             ; premier calcul
+.A100:
+    popf
+    pop ebx
+    leave                 ; epilogue
+    ret 4                 ; alignement pile car 1 push
 ;**************************************
 ;affichage hexadecimal
 ;**************************************

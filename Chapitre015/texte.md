@@ -20,5 +20,16 @@ esi = 00000005  edi = 00000006  ebp = 00000007  esp = 0019FF74
  cs = 00000023   ds = 0000002B   ss = 0000002B   es = 0000002B
 ```
 
-Et je me rends compte que je n’ai pas encore décrits les registres de selection de segments : cs,ds,ss et es. Cela fera l’objet du prochain chapitre.<br>
+Et je me rends compte que je n’ai pas encore décrits les registres de selection de segments : cs,ds,ss et es.<br>
+Je n’ai pas trouvé d’utilité immédiate à ces registres mais il faut connaitre leurs existences. Ils existent pour des raisons historiques lorsque les registres n’avaient qu’une taille de 16 bits et le bus qui communiquait avec la mémoire avait une taille de 20 bits. <br>
+Ces registres servaient donc à compléter les registres d’usage général lorsqu’ils contenaient une adresse pour accéder à la mémoire. En 32 bits et 64 bits, il me semble que leur utilité est réduite (peut être est-il possible de s’en servir pour sauver des registres !!). Rectification : en 32 bits ils peuvent servir pour accèder à la mémoire quand celle ci fait plus de 4G0.<br>
+Ces registres sont au nombre de 6 :<br>
+cs qui complète le segment de code (.text) <br>
+ds qui complète le segment des données (.data)<br>
+ss qui complète le segment de pile (.stack)<br>
+et es, ef, eg qui complètent aussi le segment de données.<br>
+
+Vous pouvez consulter le chapitre 3.4.2 du volume 1 de la documentation Intel. <br>
+
 La routine d’affichage des registres sera intégrée dans le fichier des includes avec les autres routines générales.<br>
+

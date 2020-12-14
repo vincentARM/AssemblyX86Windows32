@@ -1,0 +1,1118 @@
+     1                                  ;---programme trtMacros.asm 
+     2                                  ; exemples de macros instructions
+     3                                  
+     4                                  ; Pense bête :
+     5                                  ; codes caractères page code 850 pour affichage console correct
+     6                                  ; à 83h é 82h è 8Ah ê 88h ù 96h
+     7                                  ;====================================
+     8                                  ; constantes
+     9                                  ;====================================
+    10                                  STD_INPUT_HANDLE  equ -10
+    11                                  
+    12                                  MB_OK               equ 000h
+    13                                  MB_OKCANCEL         equ 001h
+    14                                  MB_ABORTRETRYIGNORE equ 002h
+    15                                  MB_YESNOCANCEL      equ 003h
+    16                                  MB_YESNO            equ 004h
+    17                                  MB_RETRYCANCEL      equ 005h
+    18                                  MB_ICONERROR        equ 010h
+    19                                  MB_ICONWARNING      equ 030h
+    20                                  MB_ICONINFORMATION  equ 040h
+    21                                  
+    22                                  
+    23                                  IDABORT    equ 3   ; The Abort button was selected.
+    24                                  IDCANCEL   equ 2   ; The Cancel button was selected.
+    25                                  IDCONTINUE equ 11  ; The Continue button was selected.
+    26                                  IDIGNORE   equ 5   ; The Ignore button was selected.
+    27                                  IDNO       equ 7   ; The No button was selected.
+    28                                  IDOK       equ 1   ; The OK button was selected.
+    29                                  IDRETRY    equ 4   ; The Retry button was selected.
+    30                                  IDTRYAGAIN equ 10  ; The Try Again button was selected.
+    31                                  IDYES      equ 6   ;The Yes button was selected. 
+    32                                  ;====================================
+    33                                  ; macros instructions 
+    34                                  ;====================================
+    35                                  ; affichage d'un libellé
+    36                                  %macro afficherLib 1        
+    37                                      jmp %%endstr
+    38                                  %%str: db %1,10,0
+    39                                  %%endstr:
+    40                                      push %%str
+    41                                      call afficherConsole
+    42                                  %endmacro
+    43                                  ;=========================
+    44                                  ;affichage d'un registre
+    45                                  %macro afficherUnReg 2
+    46                                      jmp %%endstr1
+    47                                  %%str1: db %1,0
+    48                                  %%endstr1:
+    49                                      push %%str1
+    50                                      call afficherConsole
+    51                                      push %2
+    52                                      push sZoneConv
+    53                                      call conversion16
+    54                                      push sZoneConv
+    55                                      call afficherConsole
+    56                                      push szRetourLigne
+    57                                      call afficherConsole
+    58                                  %endmacro
+    59                                  ;=========================
+    60                                  ;affichage memoire
+    61                                  %macro afficherMemoire 3
+    62                                      jmp %%endstr2
+    63                                  %%str2: db %1,10,0
+    64                                  %%endstr2:
+    65                                      push %%str2
+    66                                      push %2
+    67                                      push %3
+    68                                      call afficherMem
+    69                                  %endmacro
+    70                                  ;=========================
+    71                                  ;affichage de tous les registres
+    72                                  %macro afficherRegistres 1
+    73                                      jmp %%endstr3
+    74                                  %%str3: db %1,10,0
+    75                                  %%endstr3:
+    76                                      push %%str3
+    77                                      call afficherTousRegistres
+    78                                  %endmacro
+    79                                  ;======================================
+    80                                  ; fichier des sous routines 
+    81                                  ;======================================
+    82                                  %include "./includeRoutines.asm"
+     1                              <1> ;fichier include des routines
+     2                              <1> STD_OUTPUT_HANDLE equ -11
+     3                              <1> LONGUEUR equ 33
+     4                              <1> CHARPOS equ '@'                       ; caractère d'insertion dans une chaine
+     5                              <1> TAILLEMAXITAS equ 5000                ; taille du tas 
+     6                              <1> ;=======================================
+     7                              <1> ; segment des données initialisées
+     8                              <1> ;=======================================
+     9                              <1> segment .data 
+    10 00000000 2E2F696E636C756465- <1> szTitre:       db __?FILE?__,0
+    10 00000009 526F7574696E65732E- <1>
+    10 00000012 61736D00            <1>
+    11 00000016 0A00                <1> szRetourLigne: db 10,0
+    12                              <1> 
+    13                              <1> ;zones pour l'affichage mémoire
+    14 00000018 416666696368616765- <1> szTitreAffMem: db "Affichage m",82h,"moire : adresse :"
+    14 00000021 206D826D6F69726520- <1>
+    14 0000002A 3A2061647265737365- <1>
+    14 00000033 203A                <1>
+    15 00000035 303030303030303020- <1> sAdr:          db "00000000  ",0
+    15 0000003E 2000                <1>
+    16                              <1>                
+    17 00000040 303030303030303020  <1> szBloc:        db "00000000 "
+    18 00000049 303020<rep 10h>     <1> zMem:          times 16 db "00 "
+    19 00000079 2022                <1>                db " ",34   
+    20 0000007B 30<rep 10h>         <1> zDec           times 16 db"0"
+    21 0000008B 220A0D00            <1>                db 34,10,13,0  
+    22                              <1>                
+    23                              <1> ; message pour les indicateurs d'état
+    24 0000008F 5A65726F203A20      <1> szMessIndicateurs:  db "Zero : "
+    25 00000096 20                  <1> bPos0:              db " "
+    26 00000097 205369676E653A20    <1>                     db " Signe: "
+    27 0000009F 20                  <1> bPosS:              db " "
+    28 000000A0 2043617272793A20    <1>                     db " Carry: "
+    29 000000A8 20                  <1> bPosC:              db " "
+    30 000000A9 204F66667365743A20  <1>                     db " Offset: "
+    31 000000B2 20                  <1> bPosO:              db " "
+    32 000000B3 0A00                <1>                     db 10,0
+    33                              <1> ; messages pour l'affichage des registres
+    34 000000B5 616666696368616765- <1> szTitreReg:  db "affichage registres : ",0
+    34 000000BE 207265676973747265- <1>
+    34 000000C7 73203A2000          <1>
+    35 000000CC 656178203D20        <1> szTexteReg: db 'eax = ' 
+    36 000000D2 303030303030303020- <1>  valr1:    db '00000000  '
+    36 000000DB 20                  <1>
+    37 000000DC 656278203D20        <1>            db 'ebx = '
+    38 000000E2 303030303030303020- <1>  valr2       db '00000000  '
+    38 000000EB 20                  <1>
+    39 000000EC 656378203D20        <1>            db 'ecx = '
+    40 000000F2 303030303030303020- <1>  valr3       db '00000000  '
+    40 000000FB 20                  <1>
+    41 000000FC 656478203D20        <1>            db 'edx = '
+    42 00000102 303030303030303020- <1>  valr4       db '00000000  '
+    42 0000010B 20                  <1>
+    43 0000010C 0A0D                <1>            db 10,13  ;retour ligne pour les 4 suivants
+    44 0000010E 657369203D20        <1>            db 'esi = '
+    45 00000114 303030303030303020- <1>  valr5       db '00000000  '
+    45 0000011D 20                  <1>
+    46 0000011E 656469203D20        <1>            db 'edi = '
+    47 00000124 303030303030303020- <1>  valr6       db '00000000  '
+    47 0000012D 20                  <1>
+    48 0000012E 656270203D20        <1>            db 'ebp = '
+    49 00000134 303030303030303020- <1>  valr7       db '00000000  '
+    49 0000013D 20                  <1>
+    50 0000013E 657370203D20        <1>            db 'esp = '
+    51 00000144 303030303030303020- <1>  valr8       db '00000000  '
+    51 0000014D 20                  <1>
+    52 0000014E 0A0D                <1>            db 10,13
+    53 00000150 206373203D20        <1>            db ' cs = '
+    54 00000156 303030303030303020- <1>  valr9       db '00000000  '
+    54 0000015F 20                  <1>
+    55 00000160 206473203D20        <1>            db ' ds = '
+    56 00000166 303030303030303020- <1>  valr10       db '00000000  '
+    56 0000016F 20                  <1>
+    57 00000170 207373203D20        <1>            db ' ss = '
+    58 00000176 303030303030303020- <1>  valr11       db '00000000  '
+    58 0000017F 20                  <1>
+    59 00000180 206573203D20        <1>            db ' es = '
+    60 00000186 303030303030303020- <1>  valr12       db '00000000  '
+    60 0000018F 20                  <1>
+    61                              <1>  ;           db 10,13
+    62                              <1>  ;           db 'eip = '
+    63                              <1>  ;valr13       db '00000000  '
+    64 00000190 0A0D00              <1>            db 10,13, 0
+    65 00000193 90                  <1> align 4
+    66 00000194 [21000000]          <1> iptTas:             dd sTas                 ; pointeur début du tas
+    67                              <1> ;=======================================
+    68                              <1> ; segment des données non initialisées
+    69                              <1> ;=======================================
+    70                              <1> segment .bss
+    71 00000000 <res 21h>           <1> sZoneConv:          resb LONGUEUR              ; reserve LONGUEUR octets
+    72 00000021 <res 1388h>         <1> sTas:                resb TAILLEMAXITAS        ; réserve tas
+    73                              <1> ;=======================================
+    74                              <1> ; segment de code
+    75                              <1> ;=======================================
+    76                              <1> segment .text
+    77                              <1>     extern MessageBoxA , ExitProcess, GetStdHandle, WriteFile
+    78                              <1> ;**************************************
+    79                              <1> ;affichage Message
+    80                              <1> ;**************************************
+    81                              <1> afficherMessage:
+    82 00000000 55                  <1>     push  ebp
+    83 00000001 89E5                <1>     mov ebp, esp
+    84 00000003 60                  <1>     pusha                 ;sauvegarde des registres
+    85 00000004 9C                  <1>     pushf
+    86 00000005 8B5508              <1>     mov edx, [ebp + 8]    ; recup de la valeur a afficher
+    87 00000008 6A00                <1>     push 0                ; uType = MB_OK
+    88 0000000A 68[00000000]        <1>     push dword szTitre    ; Titre de la fenêtre
+    89 0000000F 52                  <1>     push edx              ; message a afficher
+    90 00000010 6A00                <1>     push 0                ; hWnd = HWND_DESKTOP
+    91 00000012 E8(00000000)        <1>     call MessageBoxA
+    92 00000017 9D                  <1>     popf
+    93 00000018 61                  <1>     popa                  ; restaur des registres
+    94 00000019 5D                  <1>     pop ebp
+    95 0000001A C20400              <1>     ret 4                 ;alignement pile car 1 push
+    96                              <1> ;**************************************
+    97                              <1> ;affichage console
+    98                              <1> ;**************************************
+    99                              <1> afficherConsole:
+   100 0000001D 55                  <1>     push    ebp
+   101 0000001E 89E5                <1>     mov ebp, esp
+   102 00000020 83EC08              <1>     sub esp,8             ; reserve 8 octets pour le nombre de caractères écrits
+   103 00000023 60                  <1>     pusha                 ;sauvegarde des registres
+   104 00000024 9C                  <1>     pushf
+   105 00000025 8B5508              <1>     mov edx, [ebp + 8]    ; recup de la valeur a afficher
+   106                              <1>     
+   107 00000028 B900000000          <1>     mov ecx,0             ; compteur de caractères
+   108                              <1> .B1:                      ; boucle de calcul de la longueur
+   109 0000002D 8A040A              <1>     mov al,[edx,ecx]      ; charge un caractère de la chaine
+   110 00000030 3C00                <1>     cmp al,0              ; si zéro c'est la fin de la chaine
+   111 00000032 7403                <1>     je .B2
+   112 00000034 41                  <1>     inc ecx               ; sinon incremente le compteur
+   113 00000035 EBF6                <1>     jmp .B1               ; et boucle 
+   114                              <1> .B2:
+   115 00000037 6AF5                <1>     push    STD_OUTPUT_HANDLE
+   116 00000039 E8(00000000)        <1>     call    GetStdHandle  ; recherche du handle de la console
+   117 0000003E 89C3                <1>     mov     ebx, eax      ; sauvé dans ebx
+   118                              <1> 
+   119 00000040 6A00                <1>     push    0
+   120 00000042 89E8                <1>     mov    eax,ebp
+   121 00000044 83E808              <1>     sub     eax,8
+   122 00000047 50                  <1>     push    eax            ; retour nb octets affiches ?
+   123 00000048 51                  <1>     push    ecx            ; longueur du message
+   124 00000049 52                  <1>     push    edx            ; adresse du message
+   125 0000004A 53                  <1>     push    ebx            ; handle de la console
+   126 0000004B E8(00000000)        <1>     call    WriteFile
+   127 00000050 9D                  <1>     popf
+   128 00000051 61                  <1>     popa                   ; restaur des registres
+   129 00000052 83C408              <1>     add esp,8              ; libère la place
+   130 00000055 5D                  <1>     pop ebp
+   131 00000056 C20400              <1>     ret 4                  ; alignement pile car 1 push
+   132                              <1> ;***************************************************
+   133                              <1> ;conversion en base 2 d'un registre en une chaine
+   134                              <1> ;**************************************************
+   135                              <1> ; parametre 1 le registre 
+   136                              <1> ; parametre 2 l'adresse de la zone receptrice
+   137                              <1> TAILLEBIN equ 32
+   138                              <1> conversion2:
+   139 00000059 55                  <1>     push    ebp
+   140 0000005A 89E5                <1>     mov ebp, esp
+   141 0000005C 60                  <1>     pusha                  ;sauvegarde des registres
+   142 0000005D 9C                  <1>     pushf
+   143 0000005E 8B450C              <1>     mov eax,[ebp + 12]     ; recup de la valeur a afficher
+   144 00000061 8B7D08              <1>     mov edi,[ebp + 8]      ; recup adresse zone de conversion
+   145 00000064 B900000000          <1>     mov ecx,0
+   146                              <1> .A1:                       ; boucle d'extraction des bits un à un
+   147 00000069 31D2                <1>     xor edx,edx            ; raz du registre
+   148 0000006B D1E0                <1>     shl eax,1              ; extraction bit de gauche
+   149 0000006D 0F92C2              <1>     setc dl                ; si carry met 1 dans le registre dl 
+   150 00000070 80C230              <1>     add dl,'0'             ; conversion ascii
+   151 00000073 88140F              <1>     mov byte  [edi,ecx],dl ; et on place le caractere en position debut + 8
+   152 00000076 41                  <1>     inc ecx
+   153 00000077 83F920              <1>     cmp ecx,TAILLEBIN      ; si pas taille atteinte on boucle
+   154 0000007A 7CED                <1>     jl .A1
+   155 0000007C C6472000            <1>     mov byte [edi+TAILLEBIN],0 ;sinon on ajoute 0 en 32 ieme position pour terminer la chaine
+   156 00000080 9D                  <1>     popf                   ; fin routine
+   157 00000081 61                  <1>     popa                   ; restaur des registres
+   158 00000082 5D                  <1>     pop ebp
+   159 00000083 C20800              <1>     ret 8                 ; alignement pile car 2 push
+   160                              <1> ;***************************************************
+   161                              <1> ;conversion en base 10 signée
+   162                              <1> ;avec suppression des zeros inutiles
+   163                              <1> ;****************************************************
+   164                              <1> ; parametre 1  valeur à convertir
+   165                              <1> ; parametre 2  zone de conversion longueur > 11
+   166                              <1> conversion10S:
+   167 00000086 C8000000            <1>     enter 0,0              ; prologue
+   168 0000008A 60                  <1>     pusha                  ;sauvegarde des registres
+   169 0000008B 9C                  <1>     pushf
+   170 0000008C 8B7D08              <1>     mov edi,[ebp+8]        ;recup adresse de la zone de conversion
+   171 0000008F C6472100            <1>     mov BYTE [edi+LONGUEUR],0 ; stockage 0 final
+   172 00000093 8B450C              <1>     mov eax, [ebp + 12]   ; recup de la valeur a afficher
+   173 00000096 83F800              <1>     cmp eax,0             ; compare à zéro
+   174 00000099 7C04                <1>     jl .A1                ; plus petit
+   175 0000009B B22B                <1>     mov dl,'+'            ; signe positif
+   176 0000009D EB04                <1>     jmp .A2
+   177                              <1> .A1:
+   178 0000009F B22D                <1>     mov dl,'-'            ; signe négatif
+   179 000000A1 F7D8                <1>     neg eax               ; transforme en nombre positif
+   180                              <1> .A2:    
+   181 000000A3 8817                <1>     mov byte [edi],dl     ; met le signe en position 0 de la zone
+   182 000000A5 B920000000          <1>     mov ecx,LONGUEUR-1
+   183 000000AA BB0A000000          <1>     mov ebx ,10           ; diviseur
+   184                              <1> .A3:
+   185 000000AF BA00000000          <1>     mov edx,0              ; division par 10
+   186 000000B4 F7F3                <1>     div ebx
+   187 000000B6 83C230              <1>     add edx,'0'            ; conversion ascii du reste
+   188 000000B9 88140F              <1>     mov byte  [edi,ecx],dl ; et mise en place dans zone de conversion
+   189 000000BC 49                  <1>     dec ecx
+   190 000000BD 83F800              <1>     cmp eax,0              ;si division encore a faire
+   191 000000C0 75ED                <1>     jne  .A3
+   192 000000C2 41                  <1>     inc ecx
+   193 000000C3 B801000000          <1>     mov eax,1
+   194                              <1> .A4:                         ; recopie du résultat en début de zone de conversion
+   195 000000C8 8A140F              <1>     mov dl,[edi,ecx]
+   196 000000CB 881407              <1>     mov byte [edi,eax],dl
+   197 000000CE 41                  <1>     inc ecx
+   198 000000CF 40                  <1>     inc eax
+   199 000000D0 83F921              <1>     cmp ecx,LONGUEUR         ; boucle jusqu'au 0 final
+   200 000000D3 7EF3                <1>     jle .A4
+   201                              <1>                              ;fin
+   202 000000D5 9D                  <1>     popf
+   203 000000D6 61                  <1>     popa                     ; restaur des registres
+   204 000000D7 C9                  <1>     leave                    ; epilogue
+   205 000000D8 C20800              <1>     ret  8
+   206                              <1> ;***************************************************
+   207                              <1> ;conversion hexa d'un registre en une chaine
+   208                              <1> ;**************************************************
+   209                              <1> ; parametre 1 le registre 
+   210                              <1> ; parametre 2 l'adresse de la zone receptrice
+   211                              <1> TAILLEHEXA equ 8
+   212                              <1> conversion16:
+   213 000000DB 55                  <1>     push    ebp
+   214 000000DC 89E5                <1>     mov ebp, esp
+   215 000000DE 60                  <1>     pusha                  ;sauvegarde des registres
+   216 000000DF 9C                  <1>     pushf
+   217 000000E0 8B450C              <1>     mov eax, [ebp + 12]    ; recup de la valeur a afficher
+   218 000000E3 8B7D08              <1>     mov edi,[ebp + 8]      ; recup adresse zone de conversion
+   219 000000E6 B907000000          <1>     mov ecx,TAILLEHEXA-1
+   220 000000EB BB10000000          <1>     mov ebx ,16
+   221                              <1> .A1:                       ; boucle de division par 16
+   222 000000F0 BA00000000          <1>     mov edx,0
+   223 000000F5 F7F3                <1>     div ebx
+   224 000000F7 83FA09              <1>     cmp edx,9              ; si le reste est inferieur à 10 c'est un chiffre
+   225 000000FA 7F05                <1>     jg  .A2
+   226 000000FC 83C230              <1>     add edx,'0'            ; ajout de '0' pour conversion ascii
+   227 000000FF EB03                <1>     jmp  .A3
+   228                              <1> .A2:                       ;sinon c'est une lettre
+   229 00000101 83C237              <1>     add edx,'A'-10 
+   230                              <1> .A3:      
+   231 00000104 88140F              <1>     mov byte  [edi,ecx],dl ;et on place le caractere en position debut + 8
+   232 00000107 49                  <1>     dec ecx
+   233 00000108 83F900              <1>     cmp ecx,0              ;si pas taille atteinte on boucle
+   234 0000010B 7DE3                <1>     jge .A1
+   235 0000010D C6470800            <1>     mov byte [edi+TAILLEHEXA],0 ;sinon on ajoute 0 à la 9ieme position pour terminer la chaine
+   236 00000111 9D                  <1>     popf                  ; fin routine
+   237 00000112 61                  <1>     popa                  ; restaur des registres
+   238 00000113 5D                  <1>     pop ebp
+   239 00000114 C20800              <1>     ret 8                 ; alignement pile car 2 push
+   240                              <1> ;***************************************************
+   241                              <1> ;affichage des zones mèmoire
+   242                              <1> ;**************************************************
+   243                              <1> ; parametre 1 libelle 
+   244                              <1> ; parametre 2 adresse de début de la zone mémoire à afficher
+   245                              <1> ; parametre 3 le nombre de blocs
+   246                              <1> afficherMem:
+   247 00000117 C8000000            <1>     enter 0,0            ; prologue
+   248 0000011B 60                  <1>     pusha                ; sauvegarde des registres
+   249 0000011C 9C                  <1>     pushf                ; sauvegarde du registre d'état
+   250 0000011D 8B7510              <1>     mov esi, [ebp + 16]  ; recup de l'adresse du libellé
+   251 00000120 8B5D0C              <1>     mov ebx, [ebp + 12]  ; recup de l'adresse memoire.
+   252 00000123 8B4D08              <1>     mov ecx, [ebp + 8]   ; recup nombre de blocs
+   253 00000126 53                  <1>     push ebx
+   254 00000127 68[35000000]        <1>     push sAdr            ; conversion de l'adresse mémoire demandée
+   255 0000012C E8AAFFFFFF          <1>     call conversion16
+   256 00000131 BF[35000000]        <1>     mov edi,sAdr
+   257 00000136 C6470820            <1>     mov byte [edi+TAILLEHEXA],' '  ; pour écraser le 0 final
+   258 0000013A 68[18000000]        <1>     push szTitreAffMem     ; pour afficher le titre
+   259 0000013F E8D9FEFFFF          <1>     call afficherConsole
+   260 00000144 56                  <1>     push esi 
+   261 00000145 E8D3FEFFFF          <1>     call afficherConsole
+   262                              <1>     ;push szRetourLigne
+   263                              <1>     ;call afficherConsole
+   264                              <1>     
+   265 0000014A 89DE                <1>     mov    esi,ebx            ; copie adresse mémoire
+   266 0000014C 83E6F0              <1>     and    esi, 0FFFFFFF0h    ; calcul adresse de début d'un bloc de 16 octets
+   267 0000014F 89D8                <1>     mov eax,ebx               ; copie de l'adresse mémoire
+   268 00000151 29F0                <1>     sub eax,esi               ; calcul du déplacement
+   269 00000153 89C7                <1>     mov edi,eax               ; sauvegarde pour l'effacement 
+   270 00000155 C68440[48000000]2A  <1>     mov  byte [zMem-1+(eax*3)],'*' ; mise en place * devant l'adresse
+   271                              <1> .A1:                          ; début de boucle d'affichage des blocs
+   272 0000015D 51                  <1>     push ecx                  ; sauvegarde nb de bloc
+   273 0000015E 56                  <1>     push esi
+   274 0000015F 68[40000000]        <1>     push szBloc               ; conversion de l'adresse début du bloc 
+   275 00000164 E872FFFFFF          <1>     call conversion16
+   276 00000169 C605[48000000]20    <1>     mov byte [szBloc+TAILLEHEXA],' '  ; pour écraser le 0 final
+   277                              <1>  
+   278 00000170 31C9                <1>     xor    ecx,ecx
+   279                              <1> .A2:                           ; début de la boucle de conversion des octets
+   280 00000172 31C0                <1>     xor eax,eax;               ; raz eax
+   281 00000174 8A040E              <1>     mov    al, [esi+ecx]       ; charge un caractère
+   282                              <1>     ;mov ebx,0                  ; compteur caractères
+   283                              <1> ;.A3:
+   284                              <1>     ;push ebx                   ; save compteur caractères
+   285 00000177 89C2                <1>     mov edx,eax
+   286 00000179 C1E804              <1>     shr eax,4                  ; divise par 16
+   287 0000017C 89C3                <1>     mov ebx,eax
+   288 0000017E C1E304              <1>     shl ebx,4
+   289 00000181 29DA                <1>     sub edx,ebx                ; calcule le reste de la division par 16
+   290 00000183 83F809              <1>     cmp eax,9                  ; si le quotient est inferieur à 10 c'est un chiffre
+   291 00000186 7F05                <1>     jg  .A3
+   292 00000188 83C030              <1>     add eax,'0'                ; donc on ajoute la valeur ascii de '0'
+   293 0000018B EB03                <1>     jmp  .A4
+   294                              <1> .A3:                           ; sinon c'est une lettre de A à F
+   295 0000018D 83C037              <1>     add eax,'A'-10 
+   296                              <1> .A4:   
+   297 00000190 888449[49000000]    <1>     mov [zMem+(ecx*3)],al      ; on place le caractere en position 0 tous les 3 octets
+   298                              <1>     
+   299 00000197 83FA09              <1>     cmp edx,9                  ; si le reste est inferieur à 10 c'est un chiffre
+   300 0000019A 7F05                <1>     jg  .A5
+   301 0000019C 83C230              <1>     add edx,'0'                ; donc on ajoute la valeur ascii de '0'
+   302                              <1>     ;
+   303 0000019F EB03                <1>     jmp  .A6
+   304                              <1> .A5:                           ; sinon c'est une lettre de A à F
+   305 000001A1 83C237              <1>     add edx,'A'-10 
+   306                              <1> .A6:   
+   307 000001A4 889449[4A000000]    <1>     mov byte [zMem+(ecx*3)+1],dl ; on place le caractere en position 1 tous les 3 octets
+   308                              <1> 
+   309 000001AB 41                  <1>     inc ecx
+   310 000001AC 83F910              <1>     cmp ecx, 16
+   311 000001AF 7CC1                <1>     jl .A2   
+   312                              <1>     
+   313 000001B1 31DB                <1>     xor    ebx, ebx          ; raz compteur
+   314                              <1> .A7:                         ;debut de boucle d'affichage en ascii
+   315 000001B3 31C0                <1>     xor    eax, eax
+   316 000001B5 8A041E              <1>     mov    al, [esi+ebx]     ; lecture un caractère
+   317 000001B8 3C20                <1>     cmp    al, 32            ; caractère affichable en ascii ?
+   318 000001BA 7C04                <1>     jl    .A8
+   319 000001BC 3C7E                <1>     cmp    al, 126
+   320 000001BE 7E05                <1>     jle   .A9
+   321                              <1> .A8:                         ; non donc on met ? à la place
+   322 000001C0 B83F000000          <1>     mov    eax, '?'
+   323                              <1> .A9:
+   324 000001C5 8883[7B000000]      <1>     mov byte [zDec+ebx],al    ; et on le met à la bonne place sur la ligne
+   325 000001CB 43                  <1>     inc    ebx               ; incremente le compteur
+   326 000001CC 83FB10              <1>     cmp    ebx, 16           ; fin de bloc ?
+   327 000001CF 7CE2                <1>     jl    .A7                ; non alors boucle
+   328 000001D1 68[40000000]        <1>     push szBloc              ; sinon affichage du bloc
+   329 000001D6 E842FEFFFF          <1>     call afficherConsole
+   330 000001DB 59                  <1>     pop ecx                  ; recupere le nombre de bloc a afficher
+   331 000001DC 49                  <1>     dec ecx                  ; le décremente
+   332 000001DD 7412                <1>     jz .A10                  ; et si nul alors fin
+   333 000001DF 89F8                <1>     mov eax,edi
+   334 000001E1 C68440[48000000]20  <1>     mov byte [zMem-1+(eax*3)],' ' ; efface la place de l'étoile sur les autres blocs
+   335 000001E9 83C610              <1>     add esi,16               ; augmente l'adresse du nouveau bloc de 16 octets
+   336 000001EC E96CFFFFFF          <1>     jmp .A1                  ; et boucle au début
+   337                              <1> 
+   338                              <1> .A10:                        ; fin de la routine
+   339 000001F1 9D                  <1>     popf
+   340 000001F2 61                  <1>     popa                     ; restaur des registres
+   341 000001F3 C9                  <1>     leave                    ; epilogue
+   342 000001F4 C20C00              <1>     ret 12                    ; alignement pile car 3 push
+   343                              <1> ;**************************************
+   344                              <1> ;        affichage message d'attente
+   345                              <1> ;**************************************
+   346                              <1> ; attention le contenu de eax est perdu
+   347                              <1> afficherAttente:
+   348 000001F7 6A00                <1>     push 0                ; uType = MB_OK
+   349 000001F9 68[0B020000]        <1>     push .szTitre         ; Titre de la fenêtre
+   350 000001FE 68[11020000]        <1>     push .szMsgAttente    ; message à afficher
+   351 00000203 6A00                <1>     push 0                ; hWnd = HWND_DESKTOP
+   352 00000205 E8(00000000)        <1>     call MessageBoxA
+   353 0000020A C3                  <1>     ret                   ; retourne au programme appelant
+   354 0000020B 506175736500        <1> .szTitre:     db "Pause",0
+   355 00000211 506F757220636F6E74- <1> .szMsgAttente db "Pour continuer, cliquer sur OK",0
+   355 0000021A 696E7565722C20636C- <1>
+   355 00000223 697175657220737572- <1>
+   355 0000022C 204F4B00            <1>
+   356                              <1> ;***************************************************
+   357                              <1> ;   Affichage etat indicateurs Z S C et O 
+   358                              <1> ;****************************************************
+   359                              <1> 
+   360                              <1> verifierIndicateurs:
+   361 00000230 60                  <1>     pusha                      ;sauvegarde des registres
+   362 00000231 9C                  <1>     pushf
+   363 00000232 7409                <1>     jz .A1
+   364 00000234 C605[96000000]30    <1>     mov BYTE [bPos0],'0'
+   365 0000023B EB07                <1>     jmp .A2
+   366                              <1> .A1:
+   367 0000023D C605[96000000]31    <1>     mov BYTE [bPos0],'1'
+   368                              <1> .A2:
+   369 00000244 7809                <1>     js .A3
+   370 00000246 C605[9F000000]30    <1>     mov BYTE [bPosS],'0'
+   371 0000024D EB07                <1>     jmp .A4
+   372                              <1> .A3:
+   373 0000024F C605[9F000000]31    <1>     mov BYTE [bPosS],'1'
+   374                              <1> .A4:
+   375 00000256 7209                <1>     jc .A5
+   376 00000258 C605[A8000000]30    <1>     mov BYTE [bPosC],'0'
+   377 0000025F EB07                <1>     jmp .A6
+   378                              <1> .A5:
+   379 00000261 C605[A8000000]31    <1>     mov BYTE [bPosC],'1'
+   380                              <1> .A6:
+   381 00000268 7009                <1>     jo .A7
+   382 0000026A C605[B2000000]30    <1>     mov BYTE [bPosO],'0'
+   383 00000271 EB07                <1>     jmp .A8
+   384                              <1> .A7:
+   385 00000273 C605[B2000000]31    <1>     mov BYTE [bPosO],'1'
+   386                              <1> .A8:
+   387 0000027A 68[8F000000]        <1>     push szMessIndicateurs
+   388 0000027F E899FDFFFF          <1>     call afficherConsole
+   389 00000284 9D                  <1>     popf
+   390 00000285 61                  <1>     popa                       ; restaur des registres
+   391 00000286 C3                  <1>     ret 
+   392                              <1> ;***************************************************
+   393                              <1> ;conversion en base 10 non signée
+   394                              <1> ;avec suppression des zeros inutiles
+   395                              <1> ;et cadrage à gauche
+   396                              <1> ;****************************************************
+   397                              <1> ; parametre 1  valeur à convertir
+   398                              <1> ; parametre 2  zone de conversion longueur > 11
+   399                              <1> conversion10:
+   400 00000287 C8000000            <1>     enter 0,0
+   401 0000028B 60                  <1>     pusha                      ;sauvegarde des registres
+   402 0000028C 9C                  <1>     pushf
+   403 0000028D 8B7D08              <1>     mov edi,[ebp+8]            ;recup adresse de la zone de conversion
+   404 00000290 C6472100            <1>     mov BYTE [edi+LONGUEUR],0  ; 0 final dans zone de conversion
+   405 00000294 8B450C              <1>     mov eax, [ebp + 12]        ; recup de la valeur a afficher
+   406 00000297 B920000000          <1>     mov ecx,LONGUEUR-1
+   407 0000029C BB0A000000          <1>     mov ebx ,10
+   408                              <1> .A1:                           ; début de boucle de calcul des restes successifs
+   409 000002A1 BA00000000          <1>     mov edx,0                  ; division eax par 10
+   410                              <1>     ;mov ebx ,10
+   411 000002A6 F7F3                <1>     div ebx
+   412 000002A8 83C230              <1>     add edx,'0'                ; conversion ascii du reste
+   413 000002AB 88140F              <1>     mov byte  [edi,ecx],dl
+   414 000002AE 49                  <1>     dec ecx
+   415 000002AF 83F800              <1>     cmp eax,0                  ;si division encore a faire
+   416 000002B2 75ED                <1>     jne  .A1
+   417 000002B4 31C0                <1>     xor eax,eax                ; raz indice
+   418 000002B6 41                  <1>     inc ecx
+   419                              <1> .A5:                           ; boucle de copie du résultat de ecx à LONGUEUR
+   420 000002B7 8A140F              <1>     mov dl,[edi,ecx]           ; charge un caractère du résultat
+   421 000002BA 881407              <1>     mov byte [edi,eax],dl      ; et le met au debut de la zone de conversion
+   422 000002BD 41                  <1>     inc ecx                    ; incremente le pointeur du résultat
+   423 000002BE 40                  <1>     inc eax                    ; incremente l'indice de reception
+   424 000002BF 83F921              <1>     cmp ecx,LONGUEUR           ; boucle jusqu'au 0 final
+   425 000002C2 7EF3                <1>     jle .A5
+   426                              <1>                                ; fin
+   427 000002C4 9D                  <1>     popf
+   428 000002C5 61                  <1>     popa                       ; restaur des registres
+   429 000002C6 C9                  <1>     leave
+   430 000002C7 C20800              <1>     ret  8                     ;alignement pile car 2 push
+   431                              <1> ;**************************************
+   432                              <1> ;recherche d'une sous chaine dans une chaine
+   433                              <1> ;**************************************
+   434                              <1> ;parametre 1 = adresse de la chaine à chercher
+   435                              <1> ;parametre 2 = adresse de la chaine dans laquelle chercher
+   436                              <1> rechercherChaine:
+   437 000002CA C8040000            <1>     enter 4,0                ;prologue
+   438 000002CE 53                  <1>     push ebx                 ;sauvegarde des registres
+   439 000002CF 51                  <1>     push ecx
+   440 000002D0 52                  <1>     push edx
+   441 000002D1 57                  <1>     push edi
+   442 000002D2 56                  <1>     push esi
+   443 000002D3 9C                  <1>     pushf
+   444 000002D4 8B7D0C              <1>     mov edi, [ebp + 12]      ; recup adresse chaine à chercher
+   445 000002D7 8B7508              <1>     mov esi, [ebp + 8]       ; recup adresse chaine
+   446 000002DA B900000000          <1>     mov ecx,0                ; indice caractère sous chaine
+   447 000002DF BB00000000          <1>     mov ebx,0                ; indice chaine
+   448 000002E4 C745FCFFFFFFFF      <1>     mov DWORD[ebp-4],-1      ; index  dernière position chaine
+   449                              <1> .A1:
+   450 000002EB 8A040F              <1>     mov al,[edi+ecx]         ; charge un caractère sous chaine
+   451 000002EE 3C00                <1>     cmp al,0
+   452 000002F0 7438                <1>     je .A5                   ; fin sous chaine donc sous-chaine trouvée
+   453 000002F2 8A141E              <1>     mov dl,[esi+ebx]         ; charge un caractere de la chaine
+   454 000002F5 80FA00              <1>     cmp dl,0
+   455 000002F8 7429                <1>     je .A4                   ; din chaine donc sous chaine non trouvée
+   456 000002FA 38D0                <1>     cmp al,dl 
+   457 000002FC 750D                <1>     jne .A3
+   458 000002FE 837DFCFF            <1>     cmp  DWORD[ebp-4],-1     ; première position égale ?
+   459 00000302 7503                <1>     jne .A2
+   460 00000304 895DFC              <1>     mov  [ebp-4],ebx         ; oui alors stocke la position sur la pile
+   461                              <1> .A2:
+   462 00000307 43                  <1>     inc ebx                  ; égalité, incremente l'indice chaine
+   463 00000308 41                  <1>     inc ecx                  ; incremente l'indice sous chaine
+   464 00000309 EBE0                <1>     jmp .A1                  ; et boucle 
+   465                              <1> .A3:                         ; inégalité
+   466 0000030B B900000000          <1>     mov ecx,0                ; réanalyse depuis le début de la sous chaine
+   467 00000310 837DFCFF            <1>     cmp  DWORD[ebp-4],-1     ; mais as-t-on stocké un debut d'égalité de la chaine
+   468 00000314 7403                <1>     je .A31
+   469 00000316 8B5DFC              <1>     mov ebx, [ebp-4]         ; oui alors maj du pointeur chaine
+   470                              <1> .A31:
+   471 00000319 43                  <1>     inc ebx                  ; et increment du pointeur pour recommencer l'analyse
+   472 0000031A C745FCFFFFFFFF      <1>     mov  DWORD[ebp-4],-1     ; et remise à neutre de l'indicateur de début d'égalité
+   473 00000321 EBC8                <1>     jmp .A1                  ; et boucle
+   474                              <1> .A4:
+   475 00000323 B8FFFFFFFF          <1>     mov eax,-1               ; chaine non trouvée
+   476 00000328 EB03                <1>     jmp .Fin
+   477                              <1> .A5:
+   478 0000032A 8B45FC              <1>     mov eax,[ebp-4]          ; chaine trouvée et retour de la position début d'egalité
+   479                              <1> .Fin:
+   480 0000032D 9D                  <1>     popf                     ; restaur des registres
+   481 0000032E 5E                  <1>     pop esi
+   482 0000032F 5F                  <1>     pop edi
+   483 00000330 5A                  <1>     pop edx
+   484 00000331 59                  <1>     pop ecx
+   485 00000332 5B                  <1>     pop ebx
+   486 00000333 C9                  <1>     leave                     ; epilogue
+   487 00000334 C20800              <1>     ret 8                     ; car 2 push
+   488                              <1> ;************************************************************
+   489                              <1> ;     comparaison de 2 chaines (dans l'ordre des caractères ascii)
+   490                              <1> ;************************************************************
+   491                              <1> ; paramètre1  : adresse chaine 1
+   492                              <1> ; paramètre2  : adresse chaine 2
+   493                              <1> ; retourne 0 dans eax si égalité -1 si chaine 1 inferieure ou +1 
+   494                              <1> comparerChaines:
+   495 00000337 C8000000            <1>     enter 0,0                 ; prologue
+   496 0000033B 57                  <1>     push edi                  ;sauvegarde des registres
+   497 0000033C 51                  <1>     push ecx
+   498 0000033D 56                  <1>     push esi
+   499 0000033E 9C                  <1>     pushf
+   500 0000033F 8B7D0C              <1>     mov edi,[ebp+12]          ; récuperation adresse chaine 1
+   501 00000342 8B7508              <1>     mov esi,[ebp+8]           ; récuperation adresse chaine 2
+   502 00000345 31C9                <1>     xor ecx,ecx               ; raz indice
+   503 00000347 31C0                <1>     xor eax,eax               ; raz retour
+   504                              <1> .A1:
+   505 00000349 8A040F              <1>     mov al,[edi,ecx]          ; lecture 1 caractère chaine1
+   506 0000034C 3A040E              <1>     cmp byte al,[esi,ecx]     ; comparaison avec caractère chaine 2
+   507 0000034F 7C09                <1>     jl .A2                    ; plus petit ?
+   508 00000351 7F0E                <1>     jg .A3                    ; plus grand ?
+   509 00000353 3C00                <1>     cmp al,0                  ; fin de chaine
+   510 00000355 740F                <1>     je .A100                  ; oui égalité eax = 0
+   511 00000357 41                  <1>     inc ecx                   ; caractère suivant
+   512 00000358 EBEF                <1>     jmp .A1                   ; et boucle
+   513                              <1> .A2:
+   514 0000035A B8FFFFFFFF          <1>     mov eax,-1                ; plus petit
+   515 0000035F EB05                <1>     jmp .A100
+   516                              <1> .A3:
+   517 00000361 B801000000          <1>     mov eax,1                 ; plus grand
+   518                              <1> .A100:
+   519 00000366 9D                  <1>     popf
+   520 00000367 5E                  <1>     pop esi
+   521 00000368 59                  <1>     pop ecx
+   522 00000369 5F                  <1>     pop edi                   ; restaur des registres
+   523 0000036A C9                  <1>     leave                     ; epilogue
+   524 0000036B C20800              <1>     ret 8                     ; 2 paramètres
+   525                              <1> ;************************************************************
+   526                              <1> ;      insertion chaine dans autre chaine au délimiteur @
+   527                              <1> ;************************************************************
+   528                              <1> ; le paramètre 1 contient l'adresse de la zone à inserer
+   529                              <1> ; le parametre 2 contient l'adresse de la chaine réceptrice
+   530                              <1> ; retourne dans eax l'adresse de la nouvelle chaine (sur le tas)
+   531                              <1> insererChaine:
+   532 0000036E C8040000            <1>     enter 4,0              ; prologue
+   533                              <1> %define pos1 [ebp-4]       ; position d'insertion
+   534 00000372 53                  <1>     push ebx               ; save registres généraux
+   535 00000373 51                  <1>     push ecx
+   536 00000374 52                  <1>     push edx
+   537 00000375 57                  <1>     push edi
+   538 00000376 56                  <1>     push esi
+   539 00000377 9C                  <1>     pushf                  ; save indicateurs
+   540                              <1> 
+   541 00000378 8B3D[94010000]      <1>     mov edi,[iptTas]       ; adresse du tas pour stockage chaine finale
+   542 0000037E 8B450C              <1>     mov eax,[ebp + 12]     ; recup adresse de la chaine 1
+   543 00000381 B900000000          <1>     mov ecx,0
+   544                              <1> .A1:                       ; boucle de calcul de la longueur
+   545 00000386 803C0800            <1>     cmp byte[eax+ecx],0
+   546 0000038A 7403                <1>     je .A2                 ; zéro final ?
+   547 0000038C 41                  <1>     inc ecx
+   548 0000038D EBF7                <1>     jmp .A1
+   549                              <1> .A2:
+   550 0000038F 89CB                <1>     mov ebx,ecx            ; save longueur chaine 1
+   551 00000391 8B4508              <1>     mov eax,[ebp + 8]      ; recup de l'adresse chaine 2
+   552 00000394 B900000000          <1>     mov ecx,0
+   553                              <1> .A3:                       ; boucle de calcul de la longueur chaine 2
+   554 00000399 803C0800            <1>     cmp byte[eax+ecx],0
+   555 0000039D 7403                <1>     je .A4                 ; zéro final ?
+   556 0000039F 41                  <1>     inc ecx
+   557 000003A0 EBF7                <1>     jmp .A3
+   558                              <1> .A4:
+   559 000003A2 01CB                <1>     add ebx,ecx           ; + longueur chaine 2
+   560 000003A4 81FB88130000        <1>     cmp ebx,TAILLEMAXITAS ; verification si pas dépassement de la taille
+   561 000003AA 7D67                <1>     jge .A99              ; tas trop petit
+   562 000003AC 01FB                <1>     add ebx,edi           ; + adresse début tas
+   563 000003AE 43                  <1>     inc ebx               ; pour le zéro final
+   564 000003AF 891D[94010000]      <1>     mov [iptTas],ebx      ; maj nouvelle adresse du tas
+   565                              <1>                          ; copie début chaine jusqu'au caractère insertion
+   566 000003B5 8B7508              <1>     mov esi,[ebp + 8]    ; recup de l'adresse chaine 2    
+   567 000003B8 B900000000          <1>     mov ecx,0
+   568                              <1> .A5:                     ; boucle de copie
+   569 000003BD 8A040E              <1>     mov al,[esi+ecx]
+   570 000003C0 3C00                <1>     cmp al,0             ; zéro final ?
+   571 000003C2 743E                <1>     je .A98              ; si oui -> erreur
+   572 000003C4 3C40                <1>     cmp al,CHARPOS       ; caractère d'insertion ?
+   573 000003C6 7406                <1>     je .A6               ; oui -> suite
+   574 000003C8 88040F              <1>     mov [edi+ecx],al     ; sinon copie
+   575 000003CB 41                  <1>     inc ecx
+   576 000003CC EBEF                <1>     jmp .A5              ; et boucle
+   577                              <1> .A6:
+   578 000003CE 89CB                <1>     mov ebx,ecx          ; position départ insertion
+   579 000003D0 894DFC              <1>     mov pos1,ecx         ; et on garde la position pour copie de la fin
+   580 000003D3 B900000000          <1>     mov ecx,0
+   581 000003D8 8B750C              <1>     mov esi,[ebp + 12]   ; recup de l'adresse chaine 1
+   582                              <1> .A7:                     ; boucle de copie de la chaine à inserer 
+   583 000003DB 8A040E              <1>     mov al,[esi+ecx]
+   584 000003DE 3C00                <1>     cmp al,0             ; zero final ?
+   585 000003E0 7407                <1>     je .A8
+   586 000003E2 88041F              <1>     mov [edi+ebx],al     ; copie caractère
+   587 000003E5 43                  <1>     inc ebx
+   588 000003E6 41                  <1>     inc ecx
+   589 000003E7 EBF2                <1>     jmp .A7              ; et boucle
+   590                              <1> .A8:                     ; insertion fin chaine 2
+   591 000003E9 8B4DFC              <1>     mov ecx,pos1         ; récupération position 
+   592 000003EC 41                  <1>     inc ecx              ; pour sauter le caractère d'insertion
+   593 000003ED 8B7508              <1>     mov esi,[ebp + 8]    ; recup de l'adresse chaine 2     
+   594                              <1> .A9:                     ; boucle de copie
+   595 000003F0 8A040E              <1>     mov al,[esi+ecx]
+   596 000003F3 88041F              <1>     mov [edi+ebx],al
+   597 000003F6 3C00                <1>     cmp al,0             ; zero final ?
+   598 000003F8 7404                <1>     je .A10
+   599 000003FA 43                  <1>     inc ebx
+   600 000003FB 41                  <1>     inc ecx
+   601 000003FC EBF2                <1>     jmp .A9              ; et boucle
+   602                              <1> .A10:
+   603 000003FE 89F8                <1>     mov eax,edi          ; retourne l'adresse début de zone du tas
+   604 00000400 EB20                <1>     jmp .A100
+   605                              <1> .A98:                    ; caractère d'insertion non trouvé
+   606 00000402 68[2C040000]        <1>     push szMessPBCarIns
+   607 00000407 E811FCFFFF          <1>     call afficherConsole
+   608 0000040C B800000000          <1>     mov eax,0
+   609 00000411 EB0F                <1>     jmp .A100
+   610                              <1> .A99:                    ; erreur d'allocation tas trop petit !!
+   611 00000413 68[51040000]        <1>     push szMessPBAlloc
+   612 00000418 E800FCFFFF          <1>     call afficherConsole
+   613 0000041D B800000000          <1>     mov eax,0
+   614                              <1> .A100:    
+   615 00000422 9D                  <1>     popf                 ; restaur indicateurs
+   616 00000423 5E                  <1>     pop esi              ; restaur registres généraux
+   617 00000424 5F                  <1>     pop edi  
+   618 00000425 5A                  <1>     pop edx
+   619 00000426 59                  <1>     pop ecx
+   620 00000427 5B                  <1>     pop ebx
+   621 00000428 C9                  <1>     leave                ; epilogue
+   622 00000429 C20800              <1>     ret 8                ; car 2 paramètres en entrée
+   623 0000042C 4361726163748A7265- <1> szMessPBCarIns:  db "Caract",8Ah,"re d'insertion non trouv",82h," !!",10,0
+   623 00000435 206427696E73657274- <1>
+   623 0000043E 696F6E206E6F6E2074- <1>
+   623 00000447 726F7576822021210A- <1>
+   623 00000450 00                  <1>
+   624 00000451 50726F626C8A6D6520- <1> szMessPBAlloc:   db "Probl",8Ah,"me d'allocation !!",10,0
+   624 0000045A 6427616C6C6F636174- <1>
+   624 00000463 696F6E2021210A00    <1>
+   625                              <1> ;**************************************
+   626                              <1> ;affichage de tous les registres
+   627                              <1> ;**************************************
+   628                              <1> afficherTousRegistres:
+   629 0000046B 55                  <1>     push    ebp
+   630 0000046C 89E5                <1>     mov ebp, esp
+   631 0000046E 60                  <1>     pusha
+   632 0000046F 9C                  <1>     pushf
+   633 00000470 50                  <1>     push    eax            ; push du registre eax avant utilisation
+   634 00000471 8B4508              <1>     mov eax, [ebp + 8]     ; recup libelle 
+   635 00000474 68[B5000000]        <1>     push  szTitreReg         ; push du message
+   636 00000479 E89FFBFFFF          <1>     call  afficherConsole
+   637 0000047E 50                  <1>     push eax
+   638 0000047F E899FBFFFF          <1>     call  afficherConsole
+   639                              <1>                            ;conversion de chaque registre
+   640                              <1>                            ; donc eax deja pushé
+   641 00000484 68[D2000000]        <1>      push    valr1 ; push de l'adresse de la zone qui recuperera la conversion sans zero terminal
+   642 00000489 E88E000000          <1>      call    convreg16
+   643 0000048E 53                  <1>      push    ebx ; push du registre a convertir
+   644 0000048F 68[E2000000]        <1>      push    valr2 ; push de l'adresse de la zone qui recuperera la conversion
+   645 00000494 E883000000          <1>      call    convreg16
+   646 00000499 51                  <1>      push    ecx ; push du registre a convertir
+   647 0000049A 68[F2000000]        <1>      push    valr3 ; push de l'adresse de la zone qui recuperera la conversion
+   648 0000049F E878000000          <1>      call    convreg16
+   649 000004A4 52                  <1>      push    edx ; push du registre a convertir
+   650 000004A5 68[02010000]        <1>      push    valr4 ; push de l'adresse de la zone qui recuperera la conversion
+   651 000004AA E86D000000          <1>      call    convreg16
+   652 000004AF 56                  <1>      push    esi ; push du registre a convertir
+   653 000004B0 68[14010000]        <1>      push    valr5 ; push de l'adresse de la zone qui recuperera la conversion
+   654 000004B5 E862000000          <1>      call    convreg16
+   655 000004BA 57                  <1>      push    edi ; push du registre a convertir
+   656 000004BB 68[24010000]        <1>      push    valr6 ; push de l'adresse de la zone qui recuperera la conversion
+   657 000004C0 E857000000          <1>      call    convreg16
+   658 000004C5 FF7500              <1>      push    dword [ebp]     ; original EBP
+   659                              <1>     ; push    ebp ; push du registre a convertir
+   660 000004C8 68[34010000]        <1>      push    valr7 ; push de l'adresse de la zone qui recuperera la conversion
+   661 000004CD E84A000000          <1>      call    convreg16
+   662 000004D2 8D450C              <1>      lea     eax, [ebp+12]
+   663 000004D5 50                  <1>      push    eax             ; original ESP
+   664                              <1>      ;push    esp ; push du registre a convertir
+   665 000004D6 68[44010000]        <1>      push    valr8 ; push de l'adresse de la zone qui recuperera la conversion
+   666 000004DB E83C000000          <1>      call    convreg16
+   667 000004E0 0E                  <1>      push    cs ; push du registre a convertir
+   668 000004E1 68[56010000]        <1>      push    valr9 ; push de l'adresse de la zone qui recuperera la conversion
+   669 000004E6 E831000000          <1>      call    convreg16
+   670 000004EB 1E                  <1>      push    ds ; push du registre a convertir
+   671 000004EC 68[66010000]        <1>      push    valr10 ; push de l'adresse de la zone qui recuperera la conversion
+   672 000004F1 E826000000          <1>      call    convreg16
+   673 000004F6 16                  <1>       push    ss ; push du registre a convertir
+   674 000004F7 68[76010000]        <1>      push    valr11 ; push de l'adresse de la zone qui recuperera la conversion
+   675 000004FC E81B000000          <1>      call    convreg16
+   676 00000501 06                  <1>       push    es ; push du registre a convertir
+   677 00000502 68[86010000]        <1>      push    valr12 ; push de l'adresse de la zone qui recuperera la conversion
+   678 00000507 E810000000          <1>      call    convreg16
+   679                              <1>     ; mov    eax, [ebp]
+   680                              <1>     ; add    eax, 4         ; EIP on stack
+   681                              <1>     ; push    WORD[eax] ; push du registre a convertir
+   682                              <1>     ; push    valr13 ; push de l'adresse de la zone qui recuperera la conversion
+   683                              <1>     ; call    convreg16
+   684                              <1>      ; affichage
+   685 0000050C 68[CC000000]        <1>      push  szTexteReg  ; push du message
+   686 00000511 E807FBFFFF          <1>      call  afficherConsole
+   687                              <1>     ; et on termine    
+   688 00000516 9D                  <1>     popf
+   689 00000517 61                  <1>     popa
+   690 00000518 5D                  <1>     pop ebp
+   691 00000519 C20400              <1>     ret 4
+   692                              <1> ;*************************************************************
+   693                              <1> ;conversion base 16 valeur registre dans une zone sans 0 terminal
+   694                              <1> ;**************************************************************
+   695                              <1> ; parametre 1 le registre 
+   696                              <1> ; parametre 2 l'adresse de la zone receptrice
+   697                              <1> TAILLE equ 8
+   698                              <1> convreg16:
+   699 0000051C C8000000            <1>     enter 0,0
+   700 00000520 89E5                <1>     mov ebp, esp
+   701 00000522 60                  <1>     pusha                    ;sauvegarde des registres
+   702 00000523 9C                  <1>     pushf
+   703 00000524 8B450C              <1>     mov eax,[ebp + 12]      ; recup de la valeur a afficher
+   704 00000527 8B7D08              <1>     mov edi,[ebp + 8]       ; recup de l'adresse de la zone de reception
+   705 0000052A B907000000          <1>     mov ecx,TAILLE-1
+   706 0000052F BB10000000          <1>     mov ebx ,16
+   707                              <1> .A1:                        ; boucle de division par 16
+   708 00000534 BA00000000          <1>     mov edx,0
+   709 00000539 F7F3                <1>     div ebx
+   710 0000053B 83FA09              <1>     cmp edx,9               ; si le reste est inferieur à 10 c'est un chiffre
+   711 0000053E 7F05                <1>     jg  .A2
+   712 00000540 83C230              <1>     add edx,'0'             ; donc on ajoute '0' pour conversion en ascii
+   713                              <1>     ;
+   714 00000543 EB03                <1>     jmp  .A3
+   715                              <1> .A2:                        ;sinon c'est une lettre
+   716 00000545 83C237              <1>     add edx,'A'-10 
+   717                              <1> .A3:   
+   718                              <1>     ;et on place le caractere en position debut + 8
+   719                              <1>     ;mov ebx,[ebp + 8]
+   720                              <1>     ;add ebx,ecx
+   721                              <1>     ;dec ebx    
+   722 00000548 88140F              <1>     mov byte  [edi,ecx],dl
+   723 0000054B 49                  <1>     dec ecx
+   724 0000054C 83F900              <1>     cmp ecx,0                 ; si pas taille atteinte on boucle
+   725 0000054F 7DE3                <1>     jge  .A1
+   726 00000551 9D                  <1>     popf                      ; fin routine
+   727 00000552 61                  <1>     popa                      ; restaur des registres
+   728 00000553 C9                  <1>     leave
+   729 00000554 C20800              <1>     ret  8
+    83                                  
+    84                                  ;=================================
+    85                                  ; structures 
+    86                                  ;=================================
+    87                                  struc bufferSaisie
+    88 00000000 ????????                   .taille:   resd 1      ; un entier de 4 octets
+    89 00000004 ????????                   .carlus:   resd 1      ; 2 octets
+    90 00000008 <res 64h>                  .buffer:   resb 100    ; 100 octets
+    91                                     .fin:                  ; permet d'avoir la taille de la structure
+    92                                  endstruc
+    93                                  
+    94                                  ;=======================================
+    95                                  ; segment des données initialisées
+    96                                  ;=======================================
+    97                                  segment .data
+    98                                  
+    99 00000198 52E9706F6E64726520-     szMessOUINON:   db "Répondre par oui ou par non !!",0
+    99 000001A1 706172206F7569206F-
+    99 000001AA 7520706172206E6F6E-
+    99 000001B3 20212100           
+   100 000001B7 566F7573206176657A-     szMessOUI:      db "Vous avez cliqu",82h," sur oui.",10,0
+   100 000001C0 20636C697175822073-
+   100 000001C9 7572206F75692E0A00 
+   101 000001D2 566F7573206176657A-     szMessNON:      db "Vous avez cliqu",82h," sur non.",10,0
+   101 000001DB 20636C697175822073-
+   101 000001E4 7572206E6F6E2E0A00 
+   102 000001ED 566F7573206176657A-     szMessANNUL:    db "Vous avez cliqu",82h," sur annulation.",10,0
+   102 000001F6 20636C697175822073-
+   102 000001FF 757220616E6E756C61-
+   102 00000208 74696F6E2E0A00     
+   103                                  ;affichage message d'erreur
+   104 0000020F 45525245555200          szTitreErreur   db "ERREUR",0
+   105 00000216 556E65206572726575-     szFormMessErr   db "Une erreur a été rencontrée code : %d à la ligne %d",0 
+   105 0000021F 72206120E974E92072-
+   105 00000228 656E636F6E7472E965-
+   105 00000231 20636F6465203A2025-
+   105 0000023A 6420E0206C61206C69-
+   105 00000243 676E6520256400     
+   106                                   
+   107 0000024A 90<rep 2h>              align 4
+   108                                  stSaisieClavier:
+   109                                      istruc bufferSaisie
+   110 0000024C 64000000                      at bufferSaisie.taille, dd 100
+   111 00000250 00<rep 68h>                 iend
+   112                                  ;=======================================
+   113                                  ; segment des données non initialisées
+   114                                  ;=======================================
+   115                                  segment .bss
+   116                                  ;sZoneConv:         resb 24 
+   117 000013A9 ????????                iNbarg:             resd 1
+   118 000013AD <res 50h>               szMessComplet       resb 80
+   119                                  ;=======================================
+   120                                  ; segment de code
+   121                                  ;=======================================
+   122                                  segment .text
+   123                                      global Main
+   124                                      extern ReadConsoleA,GetLastError,wsprintfA,GetCommandLineA,CommandLineToArgvW
+   125                                  Main:
+   126                                      afficherUnReg "registre esp :", esp  ; pour verifier que la pile est toujours bien alignée
+    46 00000557 EB0F                <1>  jmp %%endstr1
+    47 00000559 726567697374726520- <1> %%str1: db %1,0
+    47 00000562 657370203A00        <1>
+    48                              <1> %%endstr1:
+    49 00000568 68[59050000]        <1>  push %%str1
+    50 0000056D E8ABFAFFFF          <1>  call afficherConsole
+    51 00000572 54                  <1>  push %2
+    52 00000573 68[00000000]        <1>  push sZoneConv
+    53 00000578 E85EFBFFFF          <1>  call conversion16
+    54 0000057D 68[00000000]        <1>  push sZoneConv
+    55 00000582 E896FAFFFF          <1>  call afficherConsole
+    56 00000587 68[16000000]        <1>  push szRetourLigne
+    57 0000058C E88CFAFFFF          <1>  call afficherConsole
+   127                                                                           ; saisie d'un texte 
+   128                                      afficherLib "Veuillez saisir un texte :"
+    37 00000591 EB1C                <1>  jmp %%endstr
+    38 00000593 566575696C6C657A20- <1> %%str: db %1,10,0
+    38 0000059C 73616973697220756E- <1>
+    38 000005A5 207465787465203A0A- <1>
+    38 000005AE 00                  <1>
+    39                              <1> %%endstr:
+    40 000005AF 68[93050000]        <1>  push %%str
+    41 000005B4 E864FAFFFF          <1>  call afficherConsole
+   129 000005B9 68[4C020000]                push stSaisieClavier
+   130 000005BE E828010000                  call lectureClavier
+   131                                  
+   132                                      afficherMemoire "zone structure saisie retour ",stSaisieClavier,3
+    62 000005C3 EB1F                <1>  jmp %%endstr2
+    63 000005C5 7A6F6E652073747275- <1> %%str2: db %1,10,0
+    63 000005CE 637475726520736169- <1>
+    63 000005D7 736965207265746F75- <1>
+    63 000005E0 72200A00            <1>
+    64                              <1> %%endstr2:
+    65 000005E4 68[C5050000]        <1>  push %%str2
+    66 000005E9 68[4C020000]        <1>  push %2
+    67 000005EE 6A03                <1>  push %3
+    68 000005F0 E822FBFFFF          <1>  call afficherMem
+   133                                  
+   134 000005F5 E8(00000000)                call GetCommandLineA
+   135                                      afficherMemoire "Ligne de commande ",eax,8
+    62 000005FA EB14                <1>  jmp %%endstr2
+    63 000005FC 4C69676E6520646520- <1> %%str2: db %1,10,0
+    63 00000605 636F6D6D616E646520- <1>
+    63 0000060E 0A00                <1>
+    64                              <1> %%endstr2:
+    65 00000610 68[FC050000]        <1>  push %%str2
+    66 00000615 50                  <1>  push %2
+    67 00000616 6A08                <1>  push %3
+    68 00000618 E8FAFAFFFF          <1>  call afficherMem
+   136                                      ;TODO: analyse ligne de commande
+   137 0000061D 50                          push eax
+   138 0000061E E814010000                  call analyserCommande
+   139                                      
+   140 00000623 6A33                        push MB_YESNOCANCEL|MB_ICONWARNING   ; 
+   141 00000625 68[0F020000]                push dword szTitreErreur  ; titre de la fenetre
+   142 0000062A 68[98010000]                push dword szMessOUINON  ; message à  afficher
+   143 0000062F 6A00                        push 0                    ; hWnd = HWND_DESKTOP
+   144 00000631 E8(00000000)                call MessageBoxA
+   145                                      afficherUnReg "Retour message :", eax
+    46 00000636 EB11                <1>  jmp %%endstr1
+    47 00000638 5265746F7572206D65- <1> %%str1: db %1,0
+    47 00000641 7373616765203A00    <1>
+    48                              <1> %%endstr1:
+    49 00000649 68[38060000]        <1>  push %%str1
+    50 0000064E E8CAF9FFFF          <1>  call afficherConsole
+    51 00000653 50                  <1>  push %2
+    52 00000654 68[00000000]        <1>  push sZoneConv
+    53 00000659 E87DFAFFFF          <1>  call conversion16
+    54 0000065E 68[00000000]        <1>  push sZoneConv
+    55 00000663 E8B5F9FFFF          <1>  call afficherConsole
+    56 00000668 68[16000000]        <1>  push szRetourLigne
+    57 0000066D E8ABF9FFFF          <1>  call afficherConsole
+   146 00000672 83F806                      cmp eax,IDYES
+   147 00000675 750A                        jne .A1
+   148 00000677 68[B7010000]                push szMessOUI
+   149 0000067C E89CF9FFFF                  call afficherConsole
+   150                                  .A1:
+   151 00000681 83F807                      cmp eax,IDNO
+   152 00000684 750A                        jne .A2
+   153 00000686 68[D2010000]                push szMessNON
+   154 0000068B E88DF9FFFF                  call afficherConsole
+   155                                  .A2:
+   156 00000690 83F802                      cmp eax,IDCANCEL
+   157 00000693 750A                        jne .A3
+   158 00000695 68[ED010000]                push szMessANNUL
+   159 0000069A E87EF9FFFF                  call afficherConsole
+   160                                  .A3:
+   161 0000069F EB05                        jmp .Fin
+   162                                  .A99:
+   163 000006A1 E8F9000000                  call afficherErreur                   ; affiche les erreurs 
+   164                                      
+   165                                  .Fin:
+   166                                      afficherUnReg "registre esp :", esp   ; affichage de la pile 
+    46 000006A6 EB0F                <1>  jmp %%endstr1
+    47 000006A8 726567697374726520- <1> %%str1: db %1,0
+    47 000006B1 657370203A00        <1>
+    48                              <1> %%endstr1:
+    49 000006B7 68[A8060000]        <1>  push %%str1
+    50 000006BC E85CF9FFFF          <1>  call afficherConsole
+    51 000006C1 54                  <1>  push %2
+    52 000006C2 68[00000000]        <1>  push sZoneConv
+    53 000006C7 E80FFAFFFF          <1>  call conversion16
+    54 000006CC 68[00000000]        <1>  push sZoneConv
+    55 000006D1 E847F9FFFF          <1>  call afficherConsole
+    56 000006D6 68[16000000]        <1>  push szRetourLigne
+    57 000006DB E83DF9FFFF          <1>  call afficherConsole
+   167                                  
+   168 000006E0 E812FBFFFF                  call afficherAttente
+   169                                      
+   170 000006E5 50                          push eax           ; met le code retour sur la pile
+   171 000006E6 E8(00000000)                call ExitProcess   ; fin du programme 
+   172                                  
+   173                                  
+   174                                  ;============================================================   
+   175                                  ;lecture chaine du clavier
+   176                                  ;============================================================
+   177                                  ;parametre 1 : adresse structure de saisie
+   178                                  lectureClavier:
+   179 000006EB C8000000                    enter  0,0
+   180 000006EF 53                          push ebx                                ;sauvegarde des registres
+   181 000006F0 51                          push ecx
+   182 000006F1 9C                          pushf
+   183 000006F2 6AF6                        push    STD_INPUT_HANDLE
+   184 000006F4 E8(00000000)                call    GetStdHandle                    ; recup de handle ( STD_INPUT_HANDLE)
+   185 000006F9 BBB8000000                  mov ebx,__LINE__ - 1
+   186 000006FE 83F800                      cmp eax,0
+   187 00000701 7423                        je .A99
+   188 00000703 6A00                        push   0
+   189 00000705 8B5D08                      mov ebx, [ebp + 8]                      ; recup de la structure saisie
+   190 00000708 89D9                        mov ecx,ebx
+   191 0000070A 83C104                      add ecx,bufferSaisie.carlus
+   192 0000070D 51                          push ecx                                ; adresse nb octets lus
+   193 0000070E FF33                        push   dword [ebx+bufferSaisie.taille]  ; taille du buffer  
+   194 00000710 89D9                        mov ecx,ebx
+   195 00000712 83C108                      add  ecx,bufferSaisie.buffer
+   196 00000715 51                          push   ecx                              ; adresse du buffer
+   197 00000716 50                          push   eax                              ; handle récupérée plus haut 
+   198 00000717 E8(00000000)                call   ReadConsoleA 
+   199 0000071C BBC6000000                  mov ebx,__LINE__ - 1
+   200 00000721 83F800                      cmp eax,0
+   201 00000724 750A                        jne .Fin
+   202                                  .A99:
+   203 00000726 E874000000                  call afficherErreur                      ; affiche les erreurs 
+   204 0000072B B8FFFFFFFF                  mov eax,-1                               ; code retour erreur
+   205                                  .Fin:   
+   206 00000730 9D                          popf
+   207 00000731 59                          pop ecx
+   208 00000732 5B                          pop ebx                                  ; restaur des registres
+   209 00000733 C9                          leave
+   210 00000734 C20400                      ret 4
+   211                                      
+   212                                  ;============================================================   
+   213                                  ;analyse de la ligne de commande
+   214                                  ;============================================================
+   215                                  ;parametre 1 : adresse ligne de commande
+   216                                  analyserCommande:
+   217 00000737 C8000000                    enter  0,0
+   218 0000073B 60                          pusha                  ;sauvegarde des registres
+   219 0000073C 9C                          pushf
+   220 0000073D 8B7508                      mov esi, [ebp + 8]     ; recup adresse de la ligne de commande
+   221 00000740 B900000000                  mov ecx,0              ; indice caractère
+   222 00000745 BA00000000                  mov edx,0              ; top guillements
+   223 0000074A BF00000000                  mov edi,0              ; debut d'un parametre
+   224                                  .A1:
+   225 0000074F 8A040E                      mov al,[esi+ecx]       ; charge un caractère
+   226 00000752 3C00                        cmp al,0               ; fin de chaine ?
+   227 00000754 7431                        je .A6
+   228 00000756 3C20                        cmp al,' '             ; séparateur de paramètre ?
+   229 00000758 740C                        je .A4
+   230 0000075A 3C22                        cmp al,'"'             ; guillemet ?
+   231 0000075C 7526                        jne .A5
+   232 0000075E 80FA00                      cmp dl,0               ; bascule du top guillemet
+   233 00000761 0F94C2                      sete dl
+   234 00000764 EB1E                        jmp .A5
+   235                                  .A4:                       ; blanc = séparateur de paramètre
+   236 00000766 80FA01                      cmp dl,1               ; mais il est entre des guillements
+   237 00000769 7419                        je .A5                 ; donc on n'en tient pas compte
+   238 0000076B C6040E00                    mov byte [esi+ecx],0   ; sinon remplacement par un zéro final
+   239 0000076F 01F7                        add edi,esi            ; ajout du début paramètre au début ligne commande
+   240 00000771 57                          push edi
+   241 00000772 E8A6F8FFFF                  call afficherConsole   ; pour l'afficher
+   242 00000777 68[16000000]                push szRetourLigne
+   243 0000077C E89CF8FFFF                  call afficherConsole
+   244 00000781 89CF                        mov edi,ecx            ; puis mise à jour du nouveau début de paramètre
+   245 00000783 47                          inc edi
+   246                                  .A5:                       ; boucle autre caractère
+   247 00000784 41                          inc ecx
+   248 00000785 EBC8                        jmp .A1
+   249                                  .A6:                       ; fin de la ligne de commande
+   250 00000787 01F7                        add edi,esi
+   251 00000789 57                          push edi               ; affichage du dernier paramètre
+   252 0000078A E88EF8FFFF                  call afficherConsole
+   253 0000078F 68[16000000]                push szRetourLigne
+   254 00000794 E884F8FFFF                  call afficherConsole
+   255                                  .Fin:   
+   256 00000799 9D                          popf
+   257 0000079A 61                          popa                   ; restaur des registres
+   258 0000079B C9                          leave
+   259 0000079C C20400                      ret 4                  ; car un push
+   260                                  ;======================================================
+   261                                  ; affichage du code erreur 
+   262                                  ; ebx contient le N° de ligne
+   263                                  ;======================================================
+   264                                  afficherErreur:
+   265 0000079F E8(00000000)                call GetLastError          ; recherche numero erreur
+   266                                                                 ;conversion du code erreur en décimal
+   267 000007A4 53                          push ebx
+   268 000007A5 50                          push eax
+   269 000007A6 68[16020000]                push szFormMessErr
+   270 000007AB 68[AD130000]                push szMessComplet
+   271 000007B0 E8(00000000)                call wsprintfA
+   272 000007B5 83C410                      add   esp, 16             ; dépile les  4 paramétres
+   273                                                                ; affichage du message d'erreur
+   274 000007B8 6A10                        push MB_OK|MB_ICONERROR   ; uType = MB_OK et icone d'erreur
+   275 000007BA 68[0F020000]                push dword szTitreErreur  ; titre de la fenetre
+   276 000007BF 68[AD130000]                push dword szMessComplet  ; message à  afficher
+   277 000007C4 6A00                        push 0                    ; hWnd = HWND_DESKTOP
+   278 000007C6 E8(00000000)                call MessageBoxA
+   279 000007CB C3                          ret 

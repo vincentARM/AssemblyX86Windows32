@@ -51,3 +51,9 @@ Remarque 2 : ne vous contentez pas de recopier les exemples de programmes, mais 
 [Chapitre 13 : traitement des chaînes de caractères](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre013)
 
 [Chapitre 14 : structures de traitement](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre014)
+
+[Chapitre 15 : Macros instructions. Affichage de tous les registres](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre015)
+
+[Chapitre 16 : Saisie de données](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre016)
+
+

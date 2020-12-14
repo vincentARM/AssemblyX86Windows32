@@ -30,7 +30,7 @@ Voici un exemple de script  <A href="https://github.com/vincentARM/AssemblyX86Wi
 
 
 
-Pour tester tout cela, nous écrivons <a href="https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre001/pgmCh1_1.asm">ce petit programme pgmCh1_1.asm</a> avec notre éditeur, nous le sauvegardons puis nous exécutons le script. Nous corrigeons au fur et à mesure les erreurs éventuelles : nom des répertoire erronés, nom du programme source, erreur de saisie etc.
+Pour tester tout cela, nous écrivons <a href="https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre001/pgmCh1_1.asm">ce petit programme pgmCh1_1.asm</a> avec notre éditeur, nous le sauvegardons puis nous exécutons le script. Nous corrigeons au fur et à mesure les erreurs éventuelles : nom des répertoires erroné, nom du programme source, erreur de saisie etc.
  <br>
 Vous devez obtenir un exécutable avec le nom **nomduprogramme.exe** et il suffit de cliquer dessus pour l'exécuter. Remarque : **aucun émulateur n’est nécessaire !!!** c’est parfait. <br>
 Mais rien ne se passe : pas d’erreur, pas d’affichage, rien !!   Mais ceci est normal. <br>

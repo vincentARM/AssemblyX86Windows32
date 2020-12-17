@@ -1,4 +1,4 @@
-# Chapitre 19 : calculs avec des nombres en virgule flottante.
+# Chapitre 18 : calculs avec des nombres en virgule flottante.
 
 Jusqu’ici nous avons vu des manipulations de nombres entiers sur 4 octets. Dans ce chapitre nous allons effectuer des calculs avec des nombres avec une virgule (des réels ) (en anglais float) . Avec les processeurs X86 il est possible d’effectuer des calculs sur des zones de 4 octets et des zones de 8 octets. Ici nous utiliserons des zones de 8 octets pour avoir une meilleure précision. <br>
 Les nombres en virgule flottante sont codifiés très précisément avec une norme, la norme IEEE754 (voir wikipédia) et la trans codification d’une chaîne de caractères en float ou son inverse en respectant cette norme est une tâche extrêmement complexe en assembleur. Nous utiliserons donc les fonctions de l’API window pour effectuer les conversions.<br>
@@ -22,4 +22,7 @@ Relancer le programme en enlevant le p de l’instruction fst et vous verrez que
 
 Maintenant voyons la saisie d’un nombre avec une virgule  dans le programme [saisieFloat.asm](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre018/saisieFloat.asm). <br>
 Nous reprenons notre routine de saisieClavier pour saisir une chaine de caractères représentant le nombre en virgule flottante. Attention ici, il doit être saisi avec une virgule (alors que défini dans la data, il faut un point). Puis cette chaîne de caractère ansi est convertie en caractère unicode grâce à la fonction MultiByteToWideChar car la fonction de conversion d’une chaîne vers un nombre en virgule flottante VarR8FromStr n’accepte que des caractères unicode en entrée. Cette fonction a aussi pour paramètre la constante LOCALE_CUSTOM_DEFAULT qui permet de prendre en compte la virgule à la place du point.<br>
+
+Je vous laisse le soin de découvrir les autres instructions dans les différentes documentations sur Internet.<br>
+
 Ensuite nous nous contentons d’effectuer une boucle pour calculer la 5ième puissance du nombre saisi puis nous affichons le résultat en utilisant la séquence vue dans le programme précedent : conversion du float vers caractères unicode, conversion de ces caractères en caractères ansi, insertion du résultat dans le message et enfin affichage.<br>

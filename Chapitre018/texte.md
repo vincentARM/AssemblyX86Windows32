@@ -25,12 +25,12 @@ Nous reprenons notre routine de saisieClavier pour saisir une chaine de caractè
 
 Ensuite nous nous contentons d’effectuer une boucle pour calculer la 5ième puissance du nombre saisi puis nous affichons le résultat en utilisant la séquence vue dans le programme précedent : conversion du float vers caractères unicode, conversion de ces caractères en caractères ansi, insertion du résultat dans le message et enfin affichage.<br>
 
-Dans le programme resolDich.asm, nous allons voir un calcul faisant intervenir une boucle. Il s’agit de la résolution par dichotomie de l’équation x=x au carré moins 2. <br>
+Dans le programme [resolDich.asm](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre018/resolDich.asm), nous allons voir un calcul faisant intervenir une boucle. Il s’agit de la résolution par dichotomie de l’équation x=x au carré moins 2. <br>
 Dans la partie .data nous décrivons les différentes variables necessaires. Dans la partie code, j’ai mis de nombreux commentaires pour expliquer les instructions et le mouvement des registres. J’ai beaucoup utilisé les mouvements avec la mémoire et je pense que l’on peut en économiser certains en analysant plus précisément les opérations à effectuer. <br>
 Le calcul de la fonction est effectué par appel à la routine calculFct à laquelle nous passons l’adresse de la valeur et l’adresse de la zone résultat. <br>
-La principale difficulté est le test des registres de la pile. En effet il faut utiliser l’instruction fcomip qui effectue la comparaison mais qui met à jour les indicateurs standards (Z,N et C) et il faut donc utiliser le tableau de la doc intel pour savoir quels indicateurs tester :
+La principale difficulté est le test des registres de la pile. En effet il faut utiliser l’instruction fcomip qui effectue la comparaison mais qui met à jour les indicateurs standards (Z,N et C) et il faut donc utiliser le tableau de la doc intel pour savoir quels indicateurs tester : <br>
 voir le paragraphe 3.343 du volume 2 de la documentation Intel. <br>
-J’ai aussi trouvé ce tableau qui montre mieux les sauts à effectuer :
+J’ai aussi trouvé ce tableau qui montre mieux les sauts à effectuer :<br>
 +--------------+---+---+-----+------------------------------------+
 | Test         | Z | C | Jcc | Notes                              |
 +--------------+---+---+-----+------------------------------------+

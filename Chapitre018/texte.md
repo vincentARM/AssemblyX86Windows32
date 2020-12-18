@@ -31,6 +31,7 @@ Le calcul de la fonction est effectué par appel à la routine calculFct à laqu
 La principale difficulté est le test des registres de la pile. En effet il faut utiliser l’instruction fcomip qui effectue la comparaison mais qui met à jour les indicateurs standards (Z,N et C) et il faut donc utiliser le tableau de la doc intel pour savoir quels indicateurs tester : <br>
 voir le paragraphe 3.343 du volume 2 de la documentation Intel. <br>
 J’ai aussi trouvé ce tableau qui montre mieux les sauts à effectuer :<br>
+```
 +--------------+---+---+-----+------------------------------------+
 | Test         | Z | C | Jcc | Notes                              |
 +--------------+---+---+-----+------------------------------------+
@@ -39,7 +40,8 @@ J’ai aussi trouvé ce tableau qui montre mieux les sauts à effectuer :<br>
 | ST0 == ST(i) | 1 | X | JE  | CF will never be set in this case  |
 | ST0 != ST(i) | 0 | X | JNE |                                    |
 | ST0 >= ST(i) | X | 0 | JAE | As long as CF is clear we are good |
-<br>
+```
+
 Vous remarquerez que dans ce programme il y a aussi un test du registre ecx  qui limite le nombre de boucle du calcul. Ces instructions sont un exemple de sécurité à mettre en place car il n’est pas facile en cas de problème de trouver ce qui cloche dans la manipulation de la pile. <br>
 
 Je vous laisse le soin de découvrir les autres instructions dans les différentes documentations sur Internet.<br>

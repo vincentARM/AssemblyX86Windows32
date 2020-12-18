@@ -23,6 +23,24 @@ Relancer le programme en enlevant le p de l’instruction fst et vous verrez que
 Maintenant voyons la saisie d’un nombre avec une virgule  dans le programme [saisieFloat.asm](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre018/saisieFloat.asm). <br>
 Nous reprenons notre routine de saisieClavier pour saisir une chaine de caractères représentant le nombre en virgule flottante. Attention ici, il doit être saisi avec une virgule (alors que défini dans la data, il faut un point). Puis cette chaîne de caractère ansi est convertie en caractère unicode grâce à la fonction MultiByteToWideChar car la fonction de conversion d’une chaîne vers un nombre en virgule flottante VarR8FromStr n’accepte que des caractères unicode en entrée. Cette fonction a aussi pour paramètre la constante LOCALE_CUSTOM_DEFAULT qui permet de prendre en compte la virgule à la place du point.<br>
 
+Ensuite nous nous contentons d’effectuer une boucle pour calculer la 5ième puissance du nombre saisi puis nous affichons le résultat en utilisant la séquence vue dans le programme précedent : conversion du float vers caractères unicode, conversion de ces caractères en caractères ansi, insertion du résultat dans le message et enfin affichage.<br>
+
+Dans le programme resolDich.asm, nous allons voir un calcul faisant intervenir une boucle. Il s’agit de la résolution par dichotomie de l’équation x=x au carré moins 2. <br>
+Dans la partie .data nous décrivons les différentes variables necessaires. Dans la partie code, j’ai mis de nombreux commentaires pour expliquer les instructions et le mouvement des registres. J’ai beaucoup utilisé les mouvements avec la mémoire et je pense que l’on peut en économiser certains en analysant plus précisément les opérations à effectuer. <br>
+Le calcul de la fonction est effectué par appel à la routine calculFct à laquelle nous passons l’adresse de la valeur et l’adresse de la zone résultat. <br>
+La principale difficulté est le test des registres de la pile. En effet il faut utiliser l’instruction fcomip qui effectue la comparaison mais qui met à jour les indicateurs standards (Z,N et C) et il faut donc utiliser le tableau de la doc intel pour savoir quels indicateurs tester :
+voir le paragraphe 3.343 du volume 2 de la documentation Intel. <br>
+J’ai aussi trouvé ce tableau qui montre mieux les sauts à effectuer :
++--------------+---+---+-----+------------------------------------+
+| Test         | Z | C | Jcc | Notes                              |
++--------------+---+---+-----+------------------------------------+
+| ST0 < ST(i)  | X | 1 | JB  | ZF will never be set when CF = 1   |
+| ST0 <= ST(i) | 1 | 1 | JBE | Either ZF or CF is ok              |
+| ST0 == ST(i) | 1 | X | JE  | CF will never be set in this case  |
+| ST0 != ST(i) | 0 | X | JNE |                                    |
+| ST0 >= ST(i) | X | 0 | JAE | As long as CF is clear we are good |
+<br>
+Vous remarquerez que dans ce programme il y a aussi un test du registre ecx  qui limite le nombre de boucle du calcul. Ces instructions sont un exemple de sécurité à mettre en place car il n’est pas facile en cas de problème de trouver ce qui cloche dans la manipulation de la pile. <br>
+
 Je vous laisse le soin de découvrir les autres instructions dans les différentes documentations sur Internet.<br>
 
-Ensuite nous nous contentons d’effectuer une boucle pour calculer la 5ième puissance du nombre saisi puis nous affichons le résultat en utilisant la séquence vue dans le programme précedent : conversion du float vers caractères unicode, conversion de ces caractères en caractères ansi, insertion du résultat dans le message et enfin affichage.<br>

@@ -7,15 +7,15 @@ Nous allons mettre les macros dans un autre fichier séparé que nous intégrero
 Enfin, nous allons modifier le fichier des routines pour intégrer les fichiers includes ci dessus et effectuer la compilation avec nasm pour créer un fichier objet. Ce fichier objet sera lié aux futurs programmes principaux lors de l’appel du linker. Ainsi ces routines ne seront compilées qu’une fois.
 Enfin nous écrivons un programme squelette qui nous servira de base pour l’écriture de nouveaux programmes. Ce qui donne :<br>
 Fichier des constantes : [includeConstantes.inc](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre019/includeConstantes.inc) <br>
-Fichier des macros instructions : {includeMacros.inc](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre019/includeMacros.inc) <br>
+Fichier des macros instructions : [includeMacros.inc](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre019/includeMacros.inc) <br>
 Fichier des routines : [routines32.asm](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre019/routines32.asm) <br>
 Fichier squelette : [squelX86.asm](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre019/squelX86.asm)<br>
 
-Script powerShell pour compiler les routines : compil32Routines.ps1  . Ce script n'utilise pas le linker car il faut juste créer un fichier objet.<br>
+Script powerShell pour compiler les routines : [compil32Routines.ps1](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre019/compil32Routines.ps1)  . Ce script n'utilise pas le linker car il faut juste créer un fichier objet.<br>
 
-Script powerShell pour compiler les programmes : compil32.ps1. Ce script intègre dans le linker le fichier objet crée par le script précédent.<br>
+Script powerShell pour compiler les programmes : [compil32.ps1](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre019/compil32.ps1). Ce script intègre dans le linker le fichier objet crée par le script précédent.<br>
 
-J’en profite pour tester un programme planCharg.asm qui donne les adresses des différents segments : c’est un plan de chargement limité !! <br>
+J’en profite pour tester un programme [planCharg.asm](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre019/planCharg.asm) qui donne les adresses des différents segments : c’est un plan de chargement limité !! <br>
 Exemple de résultat sur mon pc :
 esp= 0019FF74
 Plan de chargement

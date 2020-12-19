@@ -23,6 +23,7 @@ Vous me pardonnerez, toutes les erreurs, bêtises et mauvaises interprétations 
 
 Remarque 1 : lorsque vous écrivez, compilez et testez les programmes en assembleur, pensez à fermer toutes les autres applications ou enregistrez vos données. <br>
 Remarque 2 : ne vous contentez pas de recopier les exemples de programmes, mais modifier les pour voir les consèquences bonnes ou mauvaises de vos modifications. <br>
+Remarque 3 : les exemples de programmes ont été testés sur un système windows10 64 bits. <br>
 
 [Chapitre 1 : Les outils](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre001) <br>
 

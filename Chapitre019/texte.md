@@ -16,13 +16,14 @@ Script powerShell pour compiler les routines : [compil32Routines.ps1](https://g
 Script powerShell pour compiler les programmes : [compil32.ps1](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre019/compil32.ps1). Ce script intègre dans le linker le fichier objet crée par le script précédent.<br>
 
 J’en profite pour tester un programme [planCharg.asm](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre019/planCharg.asm) qui donne les adresses des différents segments : c’est un plan de chargement limité !! <br>
-Exemple de résultat sur mon pc :
+Exemple de résultat sur mon pc : <br>
+```
 esp= 0019FF74
 Plan de chargement
 Adresse .data = 00402000
 Adresse .bss = 004021D8
 Adresse .text = 00401000
-
+```
 <br>
 On remarque que le segment .text est situé avant le segment.data lui même situé avant le segment .bss. Que sa taille est de 0x1000 octets soit 4096. J’espère que le linker réadapte cette taille pour des programmes plus gros !!.<br>
 <br>

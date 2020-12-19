@@ -6,10 +6,10 @@ Dans ce fichier nous mettrons aussi l’instruction extern avec toutes les fonct
 Nous allons mettre les macros dans un autre fichier séparé que nous intégrerons aussi avec la commande %include.<br>
 Enfin, nous allons modifier le fichier des routines pour intégrer les fichiers includes ci dessus et effectuer la compilation avec nasm pour créer un fichier objet. Ce fichier objet sera lié aux futurs programmes principaux lors de l’appel du linker. Ainsi ces routines ne seront compilées qu’une fois.
 Enfin nous écrivons un programme squelette qui nous servira de base pour l’écriture de nouveaux programmes. Ce qui donne :<br>
-Fichier des constantes : includeConstantes.inc <br>
-Fichier des macros instructions : includeMacros.inc <br>
-Fichier des routines ; routines32.asm <br>
-Fichier squelette : squelX86.asm<br>
+Fichier des constantes : [includeConstantes.inc](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre019/includeConstantes.inc) <br>
+Fichier des macros instructions : {includeMacros.inc](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre019/includeMacros.inc) <br>
+Fichier des routines : [routines32.asm](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre019/routines32.asm) <br>
+Fichier squelette : [squelX86.asm](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre019/squelX86.asm)<br>
 
 Script powerShell pour compiler les routines : compil32Routines.ps1  . Ce script n'utilise pas le linker car il faut juste créer un fichier objet.<br>
 
@@ -31,4 +31,4 @@ Et je remarque un truc bizarre : l’adresse de la pile est inférieure aux adr
 Remarque : Chaque fois que nous utiliserons une nouvelle constante windows ou une fonction et que nous créerons une nouvelle routine, il faudra penser à l’ajouter dans le bon fichier et de recompiler les routines. <br>
 
 Il existe une autre manière pour créer un exécutable à partir de plusieurs objets : c’est d’utiliser l’utilitaire make. Je n’ai pas trouvé sous windows cet utilitaire donc j’utilise le logiciel libre mingw32-make que vous téléchargez gratuitement.<br>
-Vous trouverez dans le répertoire CreationMake toutes les structures et données pour générer l’exécutable. Celui ci se trouvera dans le répertoire  CreationMake/build. Pour utiliser les scripts powershell et le fichier Makefile, il faudra changer les répertoires des utilitaires avec vos propres répertoires.<br>
+Vous trouverez dans le répertoire [CreationMake](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre019/CreationMake) toutes les structures et données pour générer l’exécutable. Celui ci se trouvera dans le répertoire  CreationMake/build. Pour utiliser les scripts powershell et le fichier Makefile, il faudra changer les répertoires des utilitaires avec vos propres répertoires.<br>

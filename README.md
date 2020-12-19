@@ -59,3 +59,6 @@ Remarque 2 : ne vous contentez pas de recopier les exemples de programmes, mais 
 [Chapitre 17 : Lecture écriture de fichiers](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre017)
 
 [Chapitre 18 : calculs avec des nombres en virgule flottante](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre018)
+
+[Chapitre 19 : les fichiers objets](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre019)
+

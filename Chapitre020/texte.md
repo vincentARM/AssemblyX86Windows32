@@ -1,4 +1,4 @@
-# Chapitre 20 : création d »une simple fenêtre Windows. <br>
+# Chapitre 20 : création d'une simple fenêtre Windows. <br>
 
  Puisque Windows gère tout dans des fenêtres, nous allons créer notre première fenêtre simple. Il y a une documentation importante sur Internet sur le système de fenêtrage de Windows. Je vous conseille de la lire.<br>
 Dans le programme ceatFen1.asm, nous allons d'abord créer une classe des fenêtres par la fonction RegisterClassExA et dont l'unique paramètre à passer est une structure (WNDCLASSEX). Il nous faut donc d'abord décrire cette structure  puis créer l'instance (wcex) de la structure dans le programme par istruc. Pour faciliter le travail nous reprenons les mêmes noms des éléments de la structure que ceux de la documentation Microsoft : <br>

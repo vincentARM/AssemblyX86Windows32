@@ -64,3 +64,5 @@ Remarque 3 : les exemples de programmes ont été testés sur un système window
 [Chapitre 19 : les fichiers objets](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre019)
 
 [Chapitre 20 : création d'une simple fenêtre Windows](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre020)
+
+[Chapitre 21 : exemple d'une fenêtre de saisie Windows](https://github.com/vincentARM/AssemblyX86Windows32/tree/main/Chapitre21)

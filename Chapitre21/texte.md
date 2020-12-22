@@ -1,6 +1,6 @@
 # Chapitre 21 : exemple d’une fenêtre de saisie.
 
-Nous allons repartir du programme précédent pour créer un programme fenSaisie.asm qui pourra vous servir de nombreuses fois. Il ne contiendra qu'une fenêtre avec une zone de saisie, un bouton et une zone d'affichage des résultats. La zone de saisie vous permettra de récupérer un paramètre puis le bouton lancera le calcul ou la procédure que vous voulez tester et la zone d'affichage vous montrera les résultats.<br>
+Nous allons repartir du programme précédent pour créer un programme [fenSaisie.asm](https://github.com/vincentARM/AssemblyX86Windows32/blob/main/Chapitre21/fenSaisie.asm) qui pourra vous servir de nombreuses fois. Il ne contiendra qu'une fenêtre avec une zone de saisie, un bouton et une zone d'affichage des résultats. La zone de saisie vous permettra de récupérer un paramètre puis le bouton lancera le calcul ou la procédure que vous voulez tester et la zone d'affichage vous montrera les résultats.<br>
 Nous déportons d’abord toutes les constantes necessaires aux fonctions de l’API dans le fichier includeConstantes.inc. <br>
 Puis nous repartons de la création d'une fenêtre simple avec la procédure de gestion des événements ou nous testons les codes WM_CREATE, WM_DESTROY, WM_PAINT et WM_COMMAND.<br>
 Pour la création, nous ajoutons une zone de saisie simple, un bouton et une fenêtre d'affichage.<br>
